@@ -14,6 +14,9 @@ class MainViewVC: UIViewController
     @IBOutlet weak var userName: UITextField!
     @IBOutlet weak var password: UITextField!
     
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    @IBOutlet var mainView: UIView!
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -21,6 +24,16 @@ class MainViewVC: UIViewController
         //Looks for single or multiple taps.
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
         view.addGestureRecognizer(tap)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "logInSucced", name:"HTTPRequest_LogInSucced", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "logInFailed", name:"HTTPRequest_LogInFailed", object: nil)
+
+        mainView.userInteractionEnabled = true
+    }
+    
+    override func viewDidDisappear(animated: Bool)
+    {
+        NSNotificationCenter.defaultCenter().removeObserver(self) // Remove from all notifications being observed
     }
 
     override func didReceiveMemoryWarning()
@@ -43,29 +56,14 @@ class MainViewVC: UIViewController
             sendUserAlert("Alert",body: "need to set a user and password")
         }
         else
-        {            
-            
-            let defaultURLBody: String = "{\"udacity\": {\"username\": \"field1\", \"password\": \"field2\"}}"
-            let tmpURLBody = defaultURLBody.stringByReplacingOccurrencesOfString("field1", withString: userName.text!, options: NSStringCompareOptions.LiteralSearch, range: nil)
-            let newURLBody = tmpURLBody.stringByReplacingOccurrencesOfString("field2", withString: password.text!, options: NSStringCompareOptions.LiteralSearch, range: nil)
-            
-            let request = NSMutableURLRequest(URL: NSURL(string: "https://www.udacity.com/api/session")!)
-            request.HTTPMethod = "POST"
-            request.addValue("application/json", forHTTPHeaderField: "Accept")
-            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-            
-            request.HTTPBody = newURLBody.dataUsingEncoding(NSUTF8StringEncoding)
-            let session = NSURLSession.sharedSession()
-            let task = session.dataTaskWithRequest(request) { data, response, error in
-                if error != nil { // Handle error…
-                    return
-                }
-                let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) /* subset response data! */
-                print(NSString(data: newData, encoding: NSUTF8StringEncoding))
-            }
-            task.resume()
+        {
+            activityIndicator.hidden = false
+            activityIndicator.startAnimating()
+             mainView.userInteractionEnabled = false
+            HttpsRequestManager.sharedInstance.udacityLogIn("loebre@gmail.com", pass: "sIRJORDAN21")
+//             activityIndicator.stopAnimating()
+//            HttpsRequestManager.sharedInstance.udacityLogIn(userName.text!, pass: password.text!)
         }
-        
     }
 
     @IBAction func facebookLogIn(sender: AnyObject)
@@ -86,6 +84,23 @@ class MainViewVC: UIViewController
         let alert = UIAlertController(title: title, message: body, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    // MARK: - notifications
+    func logInFailed()
+    {
+        mainView.userInteractionEnabled = true
+        activityIndicator.stopAnimating()
+        sendUserAlert("Alert",body: "Log In failed, check Username or Password")
+    }
+    
+    func logInSucced()
+    {
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.mainView.userInteractionEnabled = true
+            self.activityIndicator.hidden = true
+            self.activityIndicator.stopAnimating()
+        })
     }
 }
 
