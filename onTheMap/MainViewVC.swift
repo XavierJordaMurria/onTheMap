@@ -60,9 +60,7 @@ class MainViewVC: UIViewController
             activityIndicator.hidden = false
             activityIndicator.startAnimating()
              mainView.userInteractionEnabled = false
-            HttpsRequestManager.sharedInstance.udacityLogIn("loebre@gmail.com", pass: "sIRJORDAN21")
-//             activityIndicator.stopAnimating()
-//            HttpsRequestManager.sharedInstance.udacityLogIn(userName.text!, pass: password.text!)
+            HttpsRequestManager.sharedInstance.udacityLogIn(userName.text!, pass: password.text!)
         }
     }
 
