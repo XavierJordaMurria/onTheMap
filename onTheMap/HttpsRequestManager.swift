@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SwiftyJSON
 
 class HttpsRequestManager
 {
@@ -33,9 +32,7 @@ class HttpsRequestManager
         
         let session = NSURLSession.sharedSession()
         
-        let task = session.dataTaskWithRequest(request)
-            {
-                data, response, error in
+        let task = session.dataTaskWithRequest(request)  { data, response, error in
            
             // Handle error…
             if error != nil
@@ -47,9 +44,43 @@ class HttpsRequestManager
             let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) /* subset response data! */
                 
             self.parseUdacityLogInData(newData)
-//            print(NSString(data: newData, encoding: NSUTF8StringEncoding))
             NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInSucced", object: nil)
         }
+        task.resume()
+    }
+    
+    func facebookLogIn(user:String, pass:String)
+    {
+        FBSDKProfile.enableUpdatesOnAccessTokenChange(true)
+        
+        let request = NSMutableURLRequest(URL: NSURL(string: "https://www.udacity.com/api/session")!)
+//        let fbAccessToken = FBSDKAccessToken.currentAccessToken().tokenString
+        
+        let accessToken = FBSDKAccessToken.currentAccessToken()
+        
+        
+        request.HTTPMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.HTTPBody = accessToken.tokenString.dataUsingEncoding(NSUTF8StringEncoding)
+       
+        let session = NSURLSession.sharedSession()
+        
+        let task = session.dataTaskWithRequest(request) { data, response, error in
+            
+            if error != nil
+            {
+                 NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInFailed", object: nil)
+                return
+            }
+            
+            let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) /* subset response data! */
+            
+            print(NSString(data: newData, encoding: NSUTF8StringEncoding))
+            
+            NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInSucced", object: nil)
+        }
+        
         task.resume()
     }
     
@@ -60,30 +91,85 @@ class HttpsRequestManager
         
         print("\(TAG)parseUdacityLogInDate")
         
-        let json = JSON(data: dataFromNetworking)
-        
-        if let account_registered = json["account"]["registered"].bool
+        do
         {
-            onTheMapDelegate.udacityLogInStruct.accountRegistered = account_registered
-            print("\(TAG)account_registered: \(account_registered)")
+            if let json = try NSJSONSerialization.JSONObjectWithData(dataFromNetworking, options: []) as? NSDictionary
+            {
+                print(json)
+                
+                if let account_registered = json["account"]!["registered"] as! Bool?
+                {
+                    onTheMapDelegate.udacityLogInStruct.accountRegistered = account_registered
+                    print("\(TAG)account_registered: \(account_registered)")
+                }
+                
+                if let account_key = json["account"]!["key"] as! String?
+                {
+                    onTheMapDelegate.udacityLogInStruct.accountKey = account_key
+                    print("\(TAG)account_key : \(account_key)")
+                }
+                
+                if let session_id = json["session"]!["id"] as! String?
+                {
+                    onTheMapDelegate.udacityLogInStruct.sessionID = session_id
+                    print("\(TAG)session_id: \(session_id)")
+                }
+                
+                if let session_expiration = json["session"]!["expiration"] as! String?
+                {
+                    onTheMapDelegate.udacityLogInStruct.sessionExpiration = session_expiration
+                    print("\(TAG)session_expiration: \(session_expiration)")
+                } 
+            }
         }
-        
-        if let account_key = json["account"]["key"].string
+        catch let error as NSError
         {
-            onTheMapDelegate.udacityLogInStruct.accountKey = account_key
-            print("\(TAG)account_key : \(account_key)")
+            print(error.localizedDescription)
         }
+    }
+    
+    func gettingStudentsLocation()
+    {
+        let request = NSMutableURLRequest(URL: NSURL(string: "https://api.parse.com/1/classes/StudentLocation")!)
+        request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
+        request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
         
-        if let session_id = json["session"]["id"].string
+        let session = NSURLSession.sharedSession()
+        
+        
+        let task = session.dataTaskWithRequest(request)
+            { data, response, error in
+                
+                // Handle error...
+                if error != nil
+                {
+                    NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationFailed", object: nil)
+                    return
+                }
+                else
+                {
+                    self.parseStudentsLocationsData(data!)
+                }
+            }
+        task.resume()
+    }
+    
+    func parseStudentsLocationsData(data: NSData)
+    {
+        do
         {
-            onTheMapDelegate.udacityLogInStruct.sessionID = session_id
-            print("\(TAG)session_id: \(session_id)")
+            if let jsonResult = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSDictionary
+            {
+                onTheMapDelegate.studentsLocationDic = jsonResult
+                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationSucced", object: nil)
+                
+                print(onTheMapDelegate.studentsLocationDic)
+            }
         }
-        
-        if let session_expiration = json["session"]["expiration"].string
+        catch let error as NSError
         {
-            onTheMapDelegate.udacityLogInStruct.sessionExpiration = session_expiration
-            print("\(TAG)session_expiration: \(session_expiration)")
+            NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationFailed", object: nil)
+            print(error.localizedDescription)
         }
     }
 }

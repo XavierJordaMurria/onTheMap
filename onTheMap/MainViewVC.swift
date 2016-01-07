@@ -66,6 +66,18 @@ class MainViewVC: UIViewController
 
     @IBAction func facebookLogIn(sender: AnyObject)
     {
+//        if(!userName.hasText() || !password.hasText())
+//        {
+//            sendUserAlert("Alert",body: "need to set a user and password")
+//        }
+//        else
+//        {
+//            activityIndicator.hidden = false
+//            activityIndicator.startAnimating()
+//            mainView.userInteractionEnabled = false
+//            HttpsRequestManager.sharedInstance.facebookLogIn("loebre@gmail.com", pass: "sIRJORDAN21")
+////            HttpsRequestManager.sharedInstance.facebookLogIn(userName.text!, pass: password.text!)
+//        }
         
     }
     
@@ -98,6 +110,7 @@ class MainViewVC: UIViewController
             self.mainView.userInteractionEnabled = true
             self.activityIndicator.hidden = true
             self.activityIndicator.stopAnimating()
+            self.performSegueWithIdentifier("tabBarControllerSegue", sender: self)
         })
     }
 }
