@@ -4,6 +4,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
     </dependencies>
@@ -339,7 +340,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kIB-Go-55z" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1806" y="235"/>
+            <point key="canvasLocation" x="1825.5" y="240"/>
         </scene>
         <!--MapView-->
         <scene sceneID="OqB-Fn-8c0">
@@ -355,20 +356,48 @@
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="PZM-FP-PIS">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
-                                <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="0.0" y="0.0" width="400" height="600"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="PZM-FP-PIS" secondAttribute="height" multiplier="2:3" id="zKi-f3-nTO"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="zKi-f3-nTO"/>
+                                    </mask>
                                 </variation>
+                                <variation key="widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="zKi-f3-nTO"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <outlet property="delegate" destination="6QW-Ka-ryx" id="lud-bO-wF7"/>
+                                </connections>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="PZM-FP-PIS" firstAttribute="top" secondItem="tQc-3u-0WI" secondAttribute="top" id="1pE-wk-Emw"/>
+                            <constraint firstAttribute="bottom" secondItem="PZM-FP-PIS" secondAttribute="bottom" id="HGi-nG-cxi"/>
+                            <constraint firstItem="PZM-FP-PIS" firstAttribute="leading" secondItem="tQc-3u-0WI" secondAttribute="leading" id="Jv0-zw-QML"/>
+                        </constraints>
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="PZM-FP-PIS"/>
+                            </mask>
+                            <mask key="constraints">
+                                <exclude reference="1pE-wk-Emw"/>
+                                <exclude reference="HGi-nG-cxi"/>
+                                <exclude reference="Jv0-zw-QML"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
                             <mask key="subviews">
                                 <include reference="PZM-FP-PIS"/>
+                            </mask>
+                            <mask key="constraints">
+                                <include reference="1pE-wk-Emw"/>
+                                <include reference="HGi-nG-cxi"/>
+                                <include reference="Jv0-zw-QML"/>
                             </mask>
                         </variation>
                     </view>

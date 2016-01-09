@@ -40,11 +40,13 @@ class HttpsRequestManager
                 NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInFailed", object: nil)
                 return
             }
+            else
+            {
+                let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) /* subset response data! */
                 
-            let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) /* subset response data! */
-                
-            self.parseUdacityLogInData(newData)
-            NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInSucced", object: nil)
+                self.parseUdacityLogInData(newData)
+                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInSucced", object: nil)
+            }
         }
         task.resume()
     }

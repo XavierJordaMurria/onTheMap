@@ -9,12 +9,12 @@
 import Foundation
 import MapKit
 
-class MapViewController: UIViewController
+class MapViewController: UIViewController, MKMapViewDelegate
 {
     @IBOutlet weak var mapView: MKMapView!
     
     var onTheMapDelegate: OnTheMapAppDelegate = (UIApplication.sharedApplication().delegate as! OnTheMapAppDelegate)
-    
+
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -40,13 +40,18 @@ class MapViewController: UIViewController
         annotation.title = "Big Ben"
         annotation.subtitle = "London"
         mapView.addAnnotation(annotation)
-        
     }
     
     // MARK: - Students Location Notifications
     func studentsLocationSucced()
     {
+        // The "locations" array is an array of dictionary objects that are similar to the JSON
+        // data that you can download from parse.
         let studentsDataLoc: NSArray = onTheMapDelegate.studentsLocationDic["results"] as! NSArray
+        
+        // We will create an MKPointAnnotation for each dictionary in "locations". The
+        // point annotations will be stored in this array, and then provided to the map view.
+        var annotations = [MKPointAnnotation]()
         
         for value in studentsDataLoc
         {
@@ -78,8 +83,12 @@ class MapViewController: UIViewController
                  annotation.subtitle = pinURL
             }
 
-            mapView.addAnnotation(annotation)
+            // Finally we place the annotation in an array of annotations.
+            annotations.append(annotation)
         }
+        
+        // When the array is complete, we add the annotations to the map.
+        self.mapView.addAnnotations(annotations)
     }
     
     func studentsLocationFailed()
@@ -89,5 +98,48 @@ class MapViewController: UIViewController
             alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
         })
+    }
+    
+    // MARK: - MKMapViewDelegate methods
+    
+    // Here we create a view with a "right callout accessory view". You might choose to look into other
+    // decoration alternatives. Notice the similarity between this method and the cellForRowAtIndexPath
+    // method in TableViewDataSource.
+    
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView?
+    {
+        let reuseId = "pin"
+        
+        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId) as? MKPinAnnotationView
+        
+        if pinView == nil
+        {
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinView!.canShowCallout = true
+            pinView!.pinColor = .Red
+            pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
+        }
+        else
+        {
+            pinView!.annotation = annotation
+        }
+        
+        return pinView
+    }
+    
+    
+    // This delegate method is implemented to respond to taps. It opens the system browser
+    // to the URL specified in the annotationViews subtitle property.
+    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl)
+    {
+        if control == view.rightCalloutAccessoryView
+        {
+            let app = UIApplication.sharedApplication()
+            
+            if let toOpen = view.annotation?.subtitle!
+            {
+                app.openURL(NSURL(string: toOpen)!)
+            }
+        }
     }
 }
