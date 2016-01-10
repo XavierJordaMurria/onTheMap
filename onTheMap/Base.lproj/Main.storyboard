@@ -301,7 +301,7 @@
         <!--TableView-->
         <scene sceneID="2T6-iW-Z3x">
             <objects>
-                <viewController title="TableView" id="asR-og-09f" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TabViewController" title="TableView" useStoryboardIdentifierAsRestorationIdentifier="YES" id="asR-og-09f" customClass="TabViewController" customModule="onTheMap" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="6BC-tK-RZe"/>
                         <viewControllerLayoutGuide type="bottom" id="hIX-Gf-tJi"/>
@@ -313,30 +313,159 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="7cX-UJ-GsW">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="0.0" y="44" width="400" height="556"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="7cX-UJ-GsW" secondAttribute="height" multiplier="2:3" id="f4k-EV-0K7">
+                                        <variation key="widthClass=compact" constant="-70.666666666666629"/>
+                                    </constraint>
+                                    <constraint firstAttribute="width" secondItem="7cX-UJ-GsW" secondAttribute="height" multiplier="100:139" id="p0H-Gx-s42">
+                                        <variation key="widthClass=compact" constant="-107.91366906474821"/>
+                                    </constraint>
+                                </constraints>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="cell" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" id="rF1-Ax-FF1" customClass="StudentTableCells" customModule="onTheMap" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="rF1-Ax-FF1" id="bnM-W8-4Gl">
+                                            <rect key="frame" x="0.0" y="0.0" width="240" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pin" translatesAutoresizingMaskIntoConstraints="NO" id="8mg-2T-uOU">
+                                                    <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="38" id="kAi-As-s0V"/>
+                                                    </constraints>
+                                                    <variation key="default">
+                                                        <mask key="constraints">
+                                                            <exclude reference="kAi-As-s0V"/>
+                                                        </mask>
+                                                    </variation>
+                                                    <variation key="widthClass=compact">
+                                                        <mask key="constraints">
+                                                            <include reference="kAi-As-s0V"/>
+                                                        </mask>
+                                                    </variation>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QMw-hY-ytH">
+                                                    <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="QMw-hY-ytH" firstAttribute="bottom" secondItem="8mg-2T-uOU" secondAttribute="bottom" id="Buf-7e-nDh"/>
+                                                <constraint firstItem="QMw-hY-ytH" firstAttribute="top" secondItem="bnM-W8-4Gl" secondAttribute="top" id="EXQ-P9-L4T"/>
+                                                <constraint firstItem="8mg-2T-uOU" firstAttribute="centerY" secondItem="bnM-W8-4Gl" secondAttribute="centerY" id="VA1-hO-jLT"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="QMw-hY-ytH" secondAttribute="trailing" constant="11" id="bgl-32-06O"/>
+                                                <constraint firstItem="QMw-hY-ytH" firstAttribute="leading" secondItem="8mg-2T-uOU" secondAttribute="trailing" constant="54" id="d0P-vt-noq"/>
+                                                <constraint firstItem="8mg-2T-uOU" firstAttribute="leading" secondItem="bnM-W8-4Gl" secondAttribute="leadingMargin" constant="4" id="eEk-IF-HYP"/>
+                                                <constraint firstItem="8mg-2T-uOU" firstAttribute="top" secondItem="QMw-hY-ytH" secondAttribute="top" id="xA8-Uy-biI"/>
+                                            </constraints>
+                                            <variation key="default">
+                                                <mask key="subviews">
+                                                    <exclude reference="8mg-2T-uOU"/>
+                                                    <exclude reference="QMw-hY-ytH"/>
+                                                </mask>
+                                                <mask key="constraints">
+                                                    <exclude reference="VA1-hO-jLT"/>
+                                                    <exclude reference="eEk-IF-HYP"/>
+                                                    <exclude reference="xA8-Uy-biI"/>
+                                                    <exclude reference="Buf-7e-nDh"/>
+                                                    <exclude reference="EXQ-P9-L4T"/>
+                                                    <exclude reference="bgl-32-06O"/>
+                                                    <exclude reference="d0P-vt-noq"/>
+                                                </mask>
+                                            </variation>
+                                            <variation key="widthClass=compact">
+                                                <mask key="subviews">
+                                                    <include reference="8mg-2T-uOU"/>
+                                                    <include reference="QMw-hY-ytH"/>
+                                                </mask>
+                                                <mask key="constraints">
+                                                    <include reference="VA1-hO-jLT"/>
+                                                    <include reference="eEk-IF-HYP"/>
+                                                    <include reference="xA8-Uy-biI"/>
+                                                    <include reference="Buf-7e-nDh"/>
+                                                    <include reference="EXQ-P9-L4T"/>
+                                                    <include reference="bgl-32-06O"/>
+                                                    <include reference="d0P-vt-noq"/>
+                                                </mask>
+                                            </variation>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="studentCellImage" destination="8mg-2T-uOU" id="ehH-8i-D1d"/>
+                                            <outlet property="studentCellName" destination="QMw-hY-ytH" id="6UE-3l-ibM"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="f4k-EV-0K7"/>
+                                        <exclude reference="p0H-Gx-s42"/>
+                                    </mask>
                                 </variation>
+                                <variation key="widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="f4k-EV-0K7"/>
+                                        <include reference="p0H-Gx-s42"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <outlet property="dataSource" destination="asR-og-09f" id="ng2-o9-HOR"/>
+                                    <outlet property="delegate" destination="asR-og-09f" id="1ZN-gO-anN"/>
+                                </connections>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="7cX-UJ-GsW" secondAttribute="bottom" id="0Ty-Pt-f7x"/>
+                            <constraint firstAttribute="trailing" secondItem="7cX-UJ-GsW" secondAttribute="trailing" id="gq6-oc-Tgb"/>
+                            <constraint firstItem="7cX-UJ-GsW" firstAttribute="leading" secondItem="sNo-vP-U8G" secondAttribute="leading" id="sv5-Tu-Tux"/>
+                        </constraints>
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="7cX-UJ-GsW"/>
+                            </mask>
+                            <mask key="constraints">
+                                <exclude reference="0Ty-Pt-f7x"/>
+                                <exclude reference="gq6-oc-Tgb"/>
+                                <exclude reference="sv5-Tu-Tux"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
                             <mask key="subviews">
                                 <include reference="7cX-UJ-GsW"/>
                             </mask>
+                            <mask key="constraints">
+                                <include reference="0Ty-Pt-f7x"/>
+                                <include reference="gq6-oc-Tgb"/>
+                                <include reference="sv5-Tu-Tux"/>
+                            </mask>
                         </variation>
                     </view>
                     <navigationItem key="navigationItem" title="Title" id="7z5-7D-3Xa">
-                        <barButtonItem key="leftBarButtonItem" title="LogOut" id="J6s-TB-FRd"/>
+                        <barButtonItem key="leftBarButtonItem" title="LogOut" id="J6s-TB-FRd">
+                            <connections>
+                                <action selector="logOutButton:" destination="asR-og-09f" id="VHR-gl-sdn"/>
+                            </connections>
+                        </barButtonItem>
                         <rightBarButtonItems>
-                            <barButtonItem systemItem="refresh" id="7aQ-rU-hTw"/>
-                            <barButtonItem image="pin" id="GOg-pZ-xbg"/>
+                            <barButtonItem systemItem="refresh" id="7aQ-rU-hTw">
+                                <connections>
+                                    <action selector="refreshButton:" destination="asR-og-09f" id="IcV-FU-Dmx"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="pin" id="GOg-pZ-xbg">
+                                <connections>
+                                    <action selector="setLocationButton:" destination="asR-og-09f" id="69k-eF-IV2"/>
+                                </connections>
+                            </barButtonItem>
                         </rightBarButtonItems>
                     </navigationItem>
+                    <connections>
+                        <outlet property="refresh" destination="7aQ-rU-hTw" id="V5S-DQ-Pxh"/>
+                        <outlet property="tableView" destination="7cX-UJ-GsW" id="X0O-fg-BiD"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kIB-Go-55z" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

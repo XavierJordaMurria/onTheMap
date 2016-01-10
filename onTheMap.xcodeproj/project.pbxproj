@@ -20,6 +20,8 @@
 		3665A5481C1E0794003A702B /* onTheMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3665A5471C1E0794003A702B /* onTheMapTests.swift */; };
 		3665A5531C1E0794003A702B /* onTheMapUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3665A5521C1E0794003A702B /* onTheMapUITests.swift */; };
 		36B5D0431C21F5540064E2ED /* HttpsRequestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B5D0421C21F5540064E2ED /* HttpsRequestManager.swift */; };
+		36ED3B6B1C412A5A00B8CCA1 /* TabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36ED3B6A1C412A5A00B8CCA1 /* TabViewController.swift */; };
+		36ED3B6D1C412DE600B8CCA1 /* StudentTableCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36ED3B6C1C412DE600B8CCA1 /* StudentTableCells.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +62,8 @@
 		3665A5521C1E0794003A702B /* onTheMapUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = onTheMapUITests.swift; sourceTree = "<group>"; };
 		3665A5541C1E0794003A702B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		36B5D0421C21F5540064E2ED /* HttpsRequestManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpsRequestManager.swift; sourceTree = "<group>"; };
+		36ED3B6A1C412A5A00B8CCA1 /* TabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabViewController.swift; sourceTree = "<group>"; };
+		36ED3B6C1C412DE600B8CCA1 /* StudentTableCells.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentTableCells.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +128,8 @@
 				36271E3F1C242791004F97BB /* LogInModel.swift */,
 				361589321C26CCC500BD1ED1 /* Bridging-Header.h */,
 				36157B3B1C2EB48500097775 /* MapViewController.swift */,
+				36ED3B6A1C412A5A00B8CCA1 /* TabViewController.swift */,
+				36ED3B6C1C412DE600B8CCA1 /* StudentTableCells.swift */,
 			);
 			path = onTheMap;
 			sourceTree = "<group>";
@@ -287,10 +293,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36ED3B6B1C412A5A00B8CCA1 /* TabViewController.swift in Sources */,
 				3665A5351C1E0794003A702B /* MainViewVC.swift in Sources */,
 				36271E401C242791004F97BB /* LogInModel.swift in Sources */,
 				36B5D0431C21F5540064E2ED /* HttpsRequestManager.swift in Sources */,
 				36157B3C1C2EB48500097775 /* MapViewController.swift in Sources */,
+				36ED3B6D1C412DE600B8CCA1 /* StudentTableCells.swift in Sources */,
 				3665A5331C1E0794003A702B /* OnTheMapAppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
