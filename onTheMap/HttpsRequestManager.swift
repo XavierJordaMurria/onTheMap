@@ -45,9 +45,49 @@ class HttpsRequestManager
                 let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) /* subset response data! */
                 
                 self.parseUdacityLogInData(newData)
-                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInSucced", object: nil)
+                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInSucceed", object: nil)
             }
         }
+        task.resume()
+    }
+    
+    func udacityLogOut()
+    {
+        let request = NSMutableURLRequest(URL: NSURL(string: "https://www.udacity.com/api/session")!)
+        request.HTTPMethod = "DELETE"
+        var xsrfCookie: NSHTTPCookie? = nil
+        let sharedCookieStorage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
+        
+        for cookie in sharedCookieStorage.cookies!
+        {
+            if cookie.name == "XSRF-TOKEN" { xsrfCookie = cookie }
+        }
+        
+        if let xsrfCookie = xsrfCookie {
+            request.setValue(xsrfCookie.value, forHTTPHeaderField: "X-XSRF-TOKEN")
+        }
+        
+        let session = NSURLSession.sharedSession()
+        
+        let task = session.dataTaskWithRequest(request) { data, response, error in
+            
+            if error != nil
+            { // Handle error…
+                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogOutFailed", object: nil)
+                return
+            }
+            else
+            {
+
+                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogOutSucceed", object: nil)
+            }
+            
+            let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) /* subset response data! */
+            
+            print(NSString(data: newData, encoding: NSUTF8StringEncoding))
+
+        }
+        
         task.resume()
     }
     
@@ -80,7 +120,7 @@ class HttpsRequestManager
             
             print(NSString(data: newData, encoding: NSUTF8StringEncoding))
             
-            NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInSucced", object: nil)
+            NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInSucceed", object: nil)
         }
         
         task.resume()
@@ -102,25 +142,21 @@ class HttpsRequestManager
                 if let account_registered = json["account"]!["registered"] as! Bool?
                 {
                     onTheMapDelegate.udacityLogInStruct.accountRegistered = account_registered
-                    print("\(TAG)account_registered: \(account_registered)")
                 }
                 
                 if let account_key = json["account"]!["key"] as! String?
                 {
                     onTheMapDelegate.udacityLogInStruct.accountKey = account_key
-                    print("\(TAG)account_key : \(account_key)")
                 }
                 
                 if let session_id = json["session"]!["id"] as! String?
                 {
                     onTheMapDelegate.udacityLogInStruct.sessionID = session_id
-                    print("\(TAG)session_id: \(session_id)")
                 }
                 
                 if let session_expiration = json["session"]!["expiration"] as! String?
                 {
                     onTheMapDelegate.udacityLogInStruct.sessionExpiration = session_expiration
-                    print("\(TAG)session_expiration: \(session_expiration)")
                 } 
             }
         }
@@ -137,7 +173,6 @@ class HttpsRequestManager
         request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
         
         let session = NSURLSession.sharedSession()
-        
         
         let task = session.dataTaskWithRequest(request)
             { data, response, error in
@@ -163,7 +198,7 @@ class HttpsRequestManager
             if let jsonResult = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSDictionary
             {
                 onTheMapDelegate.studentsLocationDic = jsonResult
-                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationSucced", object: nil)
+                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationSucceed", object: nil)
                 
                 print(onTheMapDelegate.studentsLocationDic)
             }

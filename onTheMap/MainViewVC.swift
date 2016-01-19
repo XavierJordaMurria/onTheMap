@@ -25,7 +25,7 @@ class MainViewVC: UIViewController
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
         view.addGestureRecognizer(tap)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "logInSucced", name:"HTTPRequest_LogInSucced", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "logInSucceed", name:"HTTPRequest_LogInSucceed", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "logInFailed", name:"HTTPRequest_LogInFailed", object: nil)
 
         mainView.userInteractionEnabled = true
@@ -106,7 +106,7 @@ class MainViewVC: UIViewController
         sendUserAlert("Alert",body: "Log In failed, check Username or Password")
     }
     
-    func logInSucced()
+    func logInSucceed()
     {
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.mainView.userInteractionEnabled = true

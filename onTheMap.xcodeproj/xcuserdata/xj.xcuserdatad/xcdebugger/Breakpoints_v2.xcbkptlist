@@ -10,12 +10,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "onTheMap/MapViewController.swift"
-            timestampString = "474031363.478794"
+            timestampString = "474368914.857002"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "56"
-            endingLineNumber = "56"
-            landmarkName = "studentsLocationSucced()"
+            startingLineNumber = "87"
+            endingLineNumber = "87"
+            landmarkName = "studentsLocationSucceed()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -26,12 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "onTheMap/MapViewController.swift"
-            timestampString = "474031363.478794"
+            timestampString = "474368914.857002"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "73"
-            endingLineNumber = "73"
-            landmarkName = "studentsLocationSucced()"
+            startingLineNumber = "104"
+            endingLineNumber = "104"
+            landmarkName = "studentsLocationSucceed()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
