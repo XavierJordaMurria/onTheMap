@@ -484,6 +484,7 @@
                             <barButtonItem image="pin" style="done" id="GOg-pZ-xbg">
                                 <connections>
                                     <action selector="setLocationButton:" destination="asR-og-09f" id="69k-eF-IV2"/>
+                                    <segue destination="MLf-ZR-6Jv" kind="presentation" id="AWz-d0-xRS"/>
                                 </connections>
                             </barButtonItem>
                         </rightBarButtonItems>
@@ -571,9 +572,7 @@
                             <barButtonItem image="pin" id="NwE-I0-csv">
                                 <connections>
                                     <action selector="setLocationButton:" destination="6QW-Ka-ryx" id="EEW-iL-agX"/>
-                                    <segue destination="Ozo-db-tte" kind="popoverPresentation" popoverAnchorBarButtonItem="NwE-I0-csv" id="TDQ-sZ-Vic">
-                                        <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
-                                    </segue>
+                                    <segue destination="MLf-ZR-6Jv" kind="presentation" id="eck-Jf-coJ"/>
                                 </connections>
                             </barButtonItem>
                         </rightBarButtonItems>
@@ -645,7 +644,7 @@
         <!--whereAreYou-->
         <scene sceneID="xil-sM-reM">
             <objects>
-                <viewController title="whereAreYou" id="Ozo-db-tte" sceneMemberID="viewController">
+                <viewController title="whereAreYou" id="Ozo-db-tte" customClass="WhereAreYou" customModule="onTheMap" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="XcS-xh-epd"/>
                         <viewControllerLayoutGuide type="bottom" id="sbj-v8-Ww2"/>
@@ -706,6 +705,9 @@
                                         <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" title="Find on the Map"/>
+                                        <connections>
+                                            <action selector="findOnMapButton:" destination="Ozo-db-tte" eventType="touchUpInside" id="tCL-wy-gKm"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.85098039219999999" green="0.85098039219999999" blue="0.83529411760000005" alpha="1" colorSpace="calibratedRGB"/>
@@ -791,6 +793,9 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jcQ-wK-XZP">
                                         <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                         <state key="normal" title="Cancel"/>
+                                        <connections>
+                                            <action selector="cancelButton:" destination="Ozo-db-tte" eventType="touchUpInside" id="HUz-rB-ug5"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.85098039219999999" green="0.85098039219999999" blue="0.83529411760000005" alpha="1" colorSpace="calibratedRGB"/>
@@ -813,15 +818,15 @@
                                         <exclude reference="jcQ-wK-XZP"/>
                                     </mask>
                                     <mask key="constraints">
+                                        <exclude reference="9Gc-49-mVD"/>
+                                        <exclude reference="Jml-pQ-iAg"/>
+                                        <exclude reference="PhU-7i-XZR"/>
                                         <exclude reference="HYx-Oa-sI4"/>
                                         <exclude reference="PMn-tq-MGh"/>
                                         <exclude reference="p9q-QY-jI3"/>
-                                        <exclude reference="PhU-7i-XZR"/>
                                         <exclude reference="5Ff-E6-YA4"/>
                                         <exclude reference="8QK-Xl-wZK"/>
                                         <exclude reference="A9y-wv-cZc"/>
-                                        <exclude reference="9Gc-49-mVD"/>
-                                        <exclude reference="Jml-pQ-iAg"/>
                                     </mask>
                                 </variation>
                                 <variation key="widthClass=compact">
@@ -832,15 +837,15 @@
                                         <include reference="jcQ-wK-XZP"/>
                                     </mask>
                                     <mask key="constraints">
+                                        <include reference="9Gc-49-mVD"/>
+                                        <include reference="Jml-pQ-iAg"/>
+                                        <include reference="PhU-7i-XZR"/>
                                         <include reference="HYx-Oa-sI4"/>
                                         <include reference="PMn-tq-MGh"/>
                                         <include reference="p9q-QY-jI3"/>
-                                        <include reference="PhU-7i-XZR"/>
                                         <include reference="5Ff-E6-YA4"/>
                                         <include reference="8QK-Xl-wZK"/>
                                         <include reference="A9y-wv-cZc"/>
-                                        <include reference="9Gc-49-mVD"/>
-                                        <include reference="Jml-pQ-iAg"/>
                                     </mask>
                                 </variation>
                             </view>
@@ -857,7 +862,9 @@
                             <constraint firstItem="06i-fV-Vbg" firstAttribute="trailing" secondItem="DSm-8W-ts3" secondAttribute="trailing" id="mKt-AD-aTG"/>
                             <constraint firstAttribute="trailing" secondItem="DSm-8W-ts3" secondAttribute="trailing" id="prQ-pd-lG4"/>
                             <constraint firstItem="06i-fV-Vbg" firstAttribute="leading" secondItem="DSm-8W-ts3" secondAttribute="leading" id="t6s-nf-XqT"/>
-                            <constraint firstItem="DSm-8W-ts3" firstAttribute="top" secondItem="XcS-xh-epd" secondAttribute="bottom" constant="178" id="uFa-eb-Uvd"/>
+                            <constraint firstItem="DSm-8W-ts3" firstAttribute="top" secondItem="XcS-xh-epd" secondAttribute="bottom" constant="178" id="uFa-eb-Uvd">
+                                <variation key="widthClass=compact" constant="178"/>
+                            </constraint>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
@@ -866,17 +873,17 @@
                                 <exclude reference="gJi-K7-7Iy"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="9Ca-Sg-kaV"/>
-                                <exclude reference="VXg-lC-PgO"/>
-                                <exclude reference="fce-UA-qqi"/>
-                                <exclude reference="2yU-Yq-QHs"/>
-                                <exclude reference="prQ-pd-lG4"/>
-                                <exclude reference="uFa-eb-Uvd"/>
                                 <exclude reference="DCE-Rr-Kbi"/>
                                 <exclude reference="VEF-PP-XIV"/>
                                 <exclude reference="jEP-5x-4Cj"/>
                                 <exclude reference="mKt-AD-aTG"/>
                                 <exclude reference="t6s-nf-XqT"/>
+                                <exclude reference="2yU-Yq-QHs"/>
+                                <exclude reference="prQ-pd-lG4"/>
+                                <exclude reference="uFa-eb-Uvd"/>
+                                <exclude reference="9Ca-Sg-kaV"/>
+                                <exclude reference="VXg-lC-PgO"/>
+                                <exclude reference="fce-UA-qqi"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -886,22 +893,44 @@
                                 <include reference="gJi-K7-7Iy"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="9Ca-Sg-kaV"/>
-                                <include reference="VXg-lC-PgO"/>
-                                <include reference="fce-UA-qqi"/>
-                                <include reference="2yU-Yq-QHs"/>
-                                <include reference="prQ-pd-lG4"/>
-                                <include reference="uFa-eb-Uvd"/>
                                 <include reference="DCE-Rr-Kbi"/>
                                 <include reference="VEF-PP-XIV"/>
                                 <exclude reference="jEP-5x-4Cj"/>
                                 <include reference="mKt-AD-aTG"/>
                                 <include reference="t6s-nf-XqT"/>
+                                <include reference="2yU-Yq-QHs"/>
+                                <include reference="prQ-pd-lG4"/>
+                                <include reference="uFa-eb-Uvd"/>
+                                <include reference="9Ca-Sg-kaV"/>
+                                <include reference="VXg-lC-PgO"/>
+                                <include reference="fce-UA-qqi"/>
                             </mask>
                         </variation>
                     </view>
+                    <navigationItem key="navigationItem" id="ZZ2-vx-Mi4"/>
+                    <connections>
+                        <outlet property="mainView" destination="Qhc-if-Me2" id="tXI-n7-3sE"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="etW-in-Q9h" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2112" y="-70"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Esb-wV-DFU">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="MLf-ZR-6Jv" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="UOw-QA-9uO">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Ozo-db-tte" kind="relationship" relationship="rootViewController" id="BnF-4r-ahi"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="889-vR-IMO" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1194" y="-70"/>
         </scene>
@@ -913,4 +942,7 @@
         <image name="map" width="32" height="32"/>
         <image name="pin" width="32" height="32"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="AWz-d0-xRS"/>
+    </inferredMetricsTieBreakers>
 </document>
