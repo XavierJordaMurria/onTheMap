@@ -7,11 +7,15 @@
 //
 
 import UIKit
+import MapKit
 
 class WhereAreYou: UIViewController
 {
         
+    @IBOutlet weak var firstView: UIView!
     @IBOutlet var mainView: UIView!
+    @IBOutlet weak var secondView: UIView!
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -21,6 +25,8 @@ class WhereAreYou: UIViewController
         view.addGestureRecognizer(tap)
         
         mainView.userInteractionEnabled = true
+        secondView.hidden = true
+        
     }
     
     override func viewDidDisappear(animated: Bool)
@@ -42,6 +48,21 @@ class WhereAreYou: UIViewController
 
     @IBAction func findOnMapButton(sender: AnyObject)
     {
+        secondView.hidden = false
+        firstView.hidden = false
+        
+        let address = "1 Infinite Loop, CA, USA"
+        let geocoder = CLGeocoder()
+        
+        geocoder.geocodeAddressString(address, completionHandler: {(placemarks, error) -> Void in
+            if((error) != nil){
+                print("Error", error)
+            }
+            if let placemark = placemarks?.first {
+                let coordinates:CLLocationCoordinate2D = placemark.location!.coordinate
+            }
+        })
+        
         
     }
     
