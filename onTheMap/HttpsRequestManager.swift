@@ -125,11 +125,115 @@ class HttpsRequestManager
         
         task.resume()
     }
+
+    func gettingStudentsLocation()
+    {
+        let request = NSMutableURLRequest(URL: NSURL(string: "https://api.parse.com/1/classes/StudentLocation")!)
+        request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
+        request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
+        
+        let session = NSURLSession.sharedSession()
+        
+        let task = session.dataTaskWithRequest(request)
+            { data, response, error in
+                
+                // Handle error...
+                if error != nil
+                {
+                    NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationFailed", object: nil)
+                    return
+                }
+                else
+                {
+                    self.parseStudentsLocationsData(data!)
+                }
+            }
+        task.resume()
+    }
+    
+    func postingStudentsLocation()
+    {
+        let request = NSMutableURLRequest(URL: NSURL(string: "https://api.parse.com/1/classes/StudentLocation")!)
+        request.HTTPMethod = "POST"
+        request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
+        request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let defaultURLBody: String = "{\"uniqueKey\": \"field1\", \"firstName\": \"field2\", \"lastName\": \"field3\",\"mapString\": \"field4\", \"mediaURL\": \"field5\",\"latitude\": field6, \"longitude\":field7}"
+        
+//        let tmpURLBodyfield1 = defaultURLBody.stringByReplacingOccurrencesOfString("field1", withString: user, options: NSStringCompareOptions.LiteralSearch, range: nil)
+//        let tmpURLBodyfield2 = defaultURLBody.stringByReplacingOccurrencesOfString("field2", withString: user, options: NSStringCompareOptions.LiteralSearch, range: nil)
+//        let tmpURLBodyfield3 = defaultURLBody.stringByReplacingOccurrencesOfString("field3", withString: user, options: NSStringCompareOptions.LiteralSearch, range: nil)
+//        let tmpURLBodyfield4 = defaultURLBody.stringByReplacingOccurrencesOfString("field4", withString: user, options: NSStringCompareOptions.LiteralSearch, range: nil)
+//        let tmpURLBodyfield5 = defaultURLBody.stringByReplacingOccurrencesOfString("field5", withString: user, options: NSStringCompareOptions.LiteralSearch, range: nil)
+//        let tmpURLBodyfield6 = defaultURLBody.stringByReplacingOccurrencesOfString("field6", withString: user, options: NSStringCompareOptions.LiteralSearch, range: nil)
+//        let tmpURLBodyfield7 = defaultURLBody.stringByReplacingOccurrencesOfString("field7", withString: user, options: NSStringCompareOptions.LiteralSearch, range: nil)
+//        
+//        request.HTTPBody = newURLBody.dataUsingEncoding(NSUTF8StringEncoding)
+        
+        request.HTTPBody = "{\"uniqueKey\": \"1234\", \"firstName\": \"John\", \"lastName\": \"Doe\",\"mapString\": \"Mountain View, CA\", \"mediaURL\": \"https://udacity.com\",\"latitude\": 37.386052, \"longitude\": -122.083851}".dataUsingEncoding(NSUTF8StringEncoding)
+        
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request)
+            {
+                data, response, error in
+            if error != nil
+            { // Handle error…
+                
+                return
+            }
+            print(NSString(data: data!, encoding: NSUTF8StringEncoding))
+        }
+        task.resume()
+    }
+    
+    func gettingPublicUserData()
+    {
+        let defaultURLBody: String =  "https://www.udacity.com/api/users/userID"
+        
+        let tmpURLBodyUserID = defaultURLBody.stringByReplacingOccurrencesOfString("userID", withString: onTheMapDelegate.udacityLogInStruct.accountKey!, options: NSStringCompareOptions.LiteralSearch, range: nil)
+        
+         let request = NSMutableURLRequest(URL: NSURL(string: tmpURLBodyUserID)!)
+        
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request)
+            {data, response, error in
+             
+                if error != nil
+                { // Handle error...
+                    return
+                }
+                
+                let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) /* subset response data! */
+                print(NSString(data: newData, encoding: NSUTF8StringEncoding))
+        }
+        task.resume()
+    }
+    
+    // MARK: - PARSERS methods
+    func parseStudentsLocationsData(data: NSData)
+    {
+        do
+        {
+            if let jsonResult = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSDictionary
+            {
+                onTheMapDelegate.studentsLocationDic = jsonResult
+                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationSucceed", object: nil)
+                
+                print(onTheMapDelegate.studentsLocationDic)
+            }
+        }
+        catch let error as NSError
+        {
+            NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationFailed", object: nil)
+            print(error.localizedDescription)
+        }
+    }
     
     func parseUdacityLogInData(dataFromNetworking: NSData)
     {
         //expected data
-       // Optional({"account": {"registered": true, "key": "2987668569"}, "session": {"id": "1481973610S0b90d77a3c1df94ff1becba7903c7192", "expiration": "2016-02-16T11:20:10.019830Z"}})
+        // Optional({"account": {"registered": true, "key": "2987668569"}, "session": {"id": "1481973610S0b90d77a3c1df94ff1becba7903c7192", "expiration": "2016-02-16T11:20:10.019830Z"}})
         
         print("\(TAG)parseUdacityLogInDate")
         
@@ -157,55 +261,11 @@ class HttpsRequestManager
                 if let session_expiration = json["session"]!["expiration"] as! String?
                 {
                     onTheMapDelegate.udacityLogInStruct.sessionExpiration = session_expiration
-                } 
+                }
             }
         }
         catch let error as NSError
         {
-            print(error.localizedDescription)
-        }
-    }
-    
-    func gettingStudentsLocation()
-    {
-        let request = NSMutableURLRequest(URL: NSURL(string: "https://api.parse.com/1/classes/StudentLocation")!)
-        request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
-        request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
-        
-        let session = NSURLSession.sharedSession()
-        
-        let task = session.dataTaskWithRequest(request)
-            { data, response, error in
-                
-                // Handle error...
-                if error != nil
-                {
-                    NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationFailed", object: nil)
-                    return
-                }
-                else
-                {
-                    self.parseStudentsLocationsData(data!)
-                }
-            }
-        task.resume()
-    }
-    
-    func parseStudentsLocationsData(data: NSData)
-    {
-        do
-        {
-            if let jsonResult = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSDictionary
-            {
-                onTheMapDelegate.studentsLocationDic = jsonResult
-                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationSucceed", object: nil)
-                
-                print(onTheMapDelegate.studentsLocationDic)
-            }
-        }
-        catch let error as NSError
-        {
-            NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationFailed", object: nil)
             print(error.localizedDescription)
         }
     }

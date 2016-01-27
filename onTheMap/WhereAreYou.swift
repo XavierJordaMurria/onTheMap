@@ -15,6 +15,9 @@ class WhereAreYou: UIViewController
     @IBOutlet weak var firstView: UIView!
     @IBOutlet var mainView: UIView!
     @IBOutlet weak var secondView: UIView!
+    @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var textViewAddress: UITextView!
+    @IBOutlet weak var textViewURL: UITextView!
     
     override func viewDidLoad()
     {
@@ -48,24 +51,36 @@ class WhereAreYou: UIViewController
 
     @IBAction func findOnMapButton(sender: AnyObject)
     {
-        secondView.hidden = false
-        firstView.hidden = false
-        
-        let address = "1 Infinite Loop, CA, USA"
         let geocoder = CLGeocoder()
         
-        geocoder.geocodeAddressString(address, completionHandler: {(placemarks, error) -> Void in
-            if((error) != nil){
+        geocoder.geocodeAddressString(textViewAddress.text, completionHandler: {(placemarks, error) -> Void in
+            if((error) != nil)
+            {
                 print("Error", error)
+                
+                let alert = UIAlertController(title: "Problem getting address", message: "Please set another address", preferredStyle: UIAlertControllerStyle.Alert)
+                
+                alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+                self.presentViewController(alert, animated: true, completion: nil)
             }
-            if let placemark = placemarks?.first {
-                let coordinates:CLLocationCoordinate2D = placemark.location!.coordinate
+            else
+            {
+                if let placemark = placemarks?.first
+                {
+//                    let coordinates:CLLocationCoordinate2D = placemark.location!.coordinate
+                     self.mapView.addAnnotation(MKPlacemark(placemark: placemark))
+                }
+                
+                self.secondView.hidden = false
+                self.firstView.hidden = false
             }
         })
-        
-        
     }
     
+    @IBAction func submitAction(sender: AnyObject)
+    {
+        HttpsRequestManager.sharedInstance.gettingPublicUserData()
+    }
     // MARK: - Keyboard methods
     //Calls this function when the tap is recognized.
     func dismissKeyboard()

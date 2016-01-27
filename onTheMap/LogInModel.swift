@@ -16,12 +16,4 @@ class LogInModel
     var sessionExpiration: String?
 
     init(){}
-//    init(reg:Bool, key:String, id:String, exp:String)
-//    {
-//        accountRegistered = reg
-//        accountKey = key
-//        sessionID = id
-//        sessionExpiration = exp
-//    }
-    
 }
