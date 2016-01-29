@@ -14,6 +14,8 @@ class LogInModel
     var accountKey: String?
     var sessionID: String?
     var sessionExpiration: String?
+    var firstName: String?
+    var lastName: String?
 
     init(){}
 }

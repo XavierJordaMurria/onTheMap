@@ -10,7 +10,6 @@ import Foundation
 
 class HttpsRequestManager
 {
-    
     static let sharedInstance = HttpsRequestManager()
     
     let TAG: String = "HttpsRequestManager: "
@@ -203,9 +202,12 @@ class HttpsRequestManager
                 { // Handle error...
                     return
                 }
-                
-                let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) /* subset response data! */
-                print(NSString(data: newData, encoding: NSUTF8StringEncoding))
+                else
+                {
+                    self.parseStudenPublicData(data!)
+                }
+//                let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) /* subset response data! */
+//                print(NSString(data: newData, encoding: NSUTF8StringEncoding))
         }
         task.resume()
     }
@@ -227,6 +229,34 @@ class HttpsRequestManager
         {
             NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationFailed", object: nil)
             print(error.localizedDescription)
+        }
+    }
+    
+    func parseStudenPublicData(dataFromNetworking: NSData)
+    {
+
+        let json: NSDictionary?
+        
+        do
+        {
+            try json = NSJSONSerialization.JSONObjectWithData(dataFromNetworking, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary
+        }
+        catch let parseError as NSError
+        {
+            print(parseError.localizedDescription)
+            return
+        }
+        
+        guard let userDict = json?["user"] as? [String: AnyObject]
+            
+            else {
+                // report no user information
+                return
+        }
+        
+        if let last = userDict["last_name"] as? String
+        {
+            print("last : \(last)")
         }
     }
     

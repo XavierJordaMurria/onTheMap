@@ -51,6 +51,8 @@ class MainViewVC: UIViewController
     
     @IBAction func udacityLogIn(sender: AnyObject)
     {
+
+        
         if(!userName.hasText() || !password.hasText())
         {
             sendUserAlert("Alert",body: "need to set a user and password")
