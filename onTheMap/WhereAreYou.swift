@@ -19,6 +19,8 @@ class WhereAreYou: UIViewController
     @IBOutlet weak var textViewAddress: UITextView!
     @IBOutlet weak var textViewURL: UITextView!
     
+    var onTheMapDelegate: OnTheMapAppDelegate = (UIApplication.sharedApplication().delegate as! OnTheMapAppDelegate)
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -29,6 +31,9 @@ class WhereAreYou: UIViewController
         
         mainView.userInteractionEnabled = true
         secondView.hidden = true
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "postStudentLocationSucceed", name:"HTTPRequest_postStudentLocationSucceed", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "postStudentLocationFailed", name:"HTTPRequest_postStudentLocationFailed", object: nil)
         
     }
     
@@ -51,35 +56,58 @@ class WhereAreYou: UIViewController
 
     @IBAction func findOnMapButton(sender: AnyObject)
     {
-        let geocoder = CLGeocoder()
-        
-        geocoder.geocodeAddressString(textViewAddress.text, completionHandler: {(placemarks, error) -> Void in
-            if((error) != nil)
-            {
-                print("Error", error)
-                
-                let alert = UIAlertController(title: "Problem getting address", message: "Please set another address", preferredStyle: UIAlertControllerStyle.Alert)
-                
-                alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
-                self.presentViewController(alert, animated: true, completion: nil)
-            }
-            else
-            {
-                if let placemark = placemarks?.first
+        if(textViewURL.text == nil)
+        {
+            let alert = UIAlertController(title: "Location field is requiered", message: "Please set a location", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+        else
+        {
+            let geocoder = CLGeocoder()
+            
+            geocoder.geocodeAddressString(textViewAddress.text, completionHandler: {(placemarks, error) -> Void in
+                if((error) != nil)
                 {
-//                    let coordinates:CLLocationCoordinate2D = placemark.location!.coordinate
-                     self.mapView.addAnnotation(MKPlacemark(placemark: placemark))
+                    print("Error", error)
+                    
+                    let alert = UIAlertController(title: "Problem getting address", message: "Please set another address", preferredStyle: UIAlertControllerStyle.Alert)
+                    
+                    alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+                    self.presentViewController(alert, animated: true, completion: nil)
                 }
-                
-                self.secondView.hidden = false
-                self.firstView.hidden = false
-            }
-        })
+                else
+                {
+                    if let placemark = placemarks?.first
+                    {
+                        let coordinates:CLLocationCoordinate2D = placemark.location!.coordinate
+                        self.mapView.addAnnotation(MKPlacemark(placemark: placemark))
+                        
+                        self.onTheMapDelegate.udacityStudentStruct.mapString = self.textViewAddress.text
+                        self.onTheMapDelegate.udacityStudentStruct.longitude = coordinates.longitude
+                        self.onTheMapDelegate.udacityStudentStruct.latitude = coordinates.latitude
+                    }
+                    
+                    self.secondView.hidden = false
+                    self.firstView.hidden = false
+                }
+            })
+        }
     }
     
     @IBAction func submitAction(sender: AnyObject)
     {
-        HttpsRequestManager.sharedInstance.gettingPublicUserData()
+        if(textViewURL.text == nil)
+        {
+            let alert = UIAlertController(title: "URL field is requiered", message: "Please set an URL", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+        else
+        {
+            onTheMapDelegate.udacityStudentStruct.mediaURL = textViewURL.text
+            HttpsRequestManager.sharedInstance.submitUserLoction()
+        }
     }
     // MARK: - Keyboard methods
     //Calls this function when the tap is recognized.
@@ -87,5 +115,27 @@ class WhereAreYou: UIViewController
     {
         //Causes the view (or one of its embedded text fields) to resign the first responder status.
         view.endEditing(true)
+    }
+    
+    // MARK: - Notification methods
+    /*!
+    * @brief postStudentLocationSucceed: called in the notification call back if the postStudentLocation request has been successfull.
+    */
+    func postStudentLocationSucceed()
+    {
+        dismissViewControllerAnimated(true, completion: { () -> Void in })
+    }
+    
+    /*!
+    * @brief postStudentLocationFailed: called in the notification call back if the postStudentLocation request hasn't been successfull.
+    */
+    func postStudentLocationFailed()
+    {
+        let alert = UIAlertController(title: "Post Studen Location failure", message: "There has been an unknow problem posting your location. Please try again", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+        
+        mainView.userInteractionEnabled = true
+        secondView.hidden = true
     }
 }

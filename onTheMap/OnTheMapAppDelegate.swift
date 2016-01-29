@@ -13,7 +13,7 @@ class OnTheMapAppDelegate: UIResponder, UIApplicationDelegate
 {
     var window: UIWindow?
     
-    var udacityLogInStruct = LogInModel()
+    var udacityStudentStruct = studentModel()
     
     var studentsLocationDic:NSDictionary = [:]
     

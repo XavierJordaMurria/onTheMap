@@ -1,5 +1,5 @@
 //
-//  LogInModel.swift
+//  studentModel.swift
 //  onTheMap
 //
 //  Created by Xavier Jorda Murria on 18/12/2015.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-class LogInModel
+class studentModel
 {
     var accountRegistered: Bool?
     var accountKey: String?
@@ -16,6 +16,10 @@ class LogInModel
     var sessionExpiration: String?
     var firstName: String?
     var lastName: String?
+    var mapString: String?
+    var mediaURL: String?
+    var latitude: Double?
+    var longitude: Double?
 
     init(){}
 }

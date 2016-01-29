@@ -15,6 +15,9 @@ class HttpsRequestManager
     let TAG: String = "HttpsRequestManager: "
     var onTheMapDelegate: OnTheMapAppDelegate = (UIApplication.sharedApplication().delegate as! OnTheMapAppDelegate)
     
+    /*!
+    * @brief udacityLogIn
+    */
     func udacityLogIn(user: String, pass:String)
     {
         let defaultURLBody: String = "{\"udacity\": {\"username\": \"field1\", \"password\": \"field2\"}}"
@@ -50,6 +53,9 @@ class HttpsRequestManager
         task.resume()
     }
     
+    /*!
+    * @brief udacityLogOut
+    */
     func udacityLogOut()
     {
         let request = NSMutableURLRequest(URL: NSURL(string: "https://www.udacity.com/api/session")!)
@@ -90,6 +96,9 @@ class HttpsRequestManager
         task.resume()
     }
     
+    /*!
+    * @brief facebookLogIn
+    */
     func facebookLogIn(user:String, pass:String)
     {
         FBSDKProfile.enableUpdatesOnAccessTokenChange(true)
@@ -125,6 +134,9 @@ class HttpsRequestManager
         task.resume()
     }
 
+    /*!
+    * @brief gettingStudentsLocation
+    */
     func gettingStudentsLocation()
     {
         let request = NSMutableURLRequest(URL: NSURL(string: "https://api.parse.com/1/classes/StudentLocation")!)
@@ -150,6 +162,9 @@ class HttpsRequestManager
         task.resume()
     }
     
+    /*!
+    * @brief postingStudentsLocation
+    */
     func postingStudentsLocation()
     {
         let request = NSMutableURLRequest(URL: NSURL(string: "https://api.parse.com/1/classes/StudentLocation")!)
@@ -160,17 +175,22 @@ class HttpsRequestManager
         
         let defaultURLBody: String = "{\"uniqueKey\": \"field1\", \"firstName\": \"field2\", \"lastName\": \"field3\",\"mapString\": \"field4\", \"mediaURL\": \"field5\",\"latitude\": field6, \"longitude\":field7}"
         
-//        let tmpURLBodyfield1 = defaultURLBody.stringByReplacingOccurrencesOfString("field1", withString: user, options: NSStringCompareOptions.LiteralSearch, range: nil)
-//        let tmpURLBodyfield2 = defaultURLBody.stringByReplacingOccurrencesOfString("field2", withString: user, options: NSStringCompareOptions.LiteralSearch, range: nil)
-//        let tmpURLBodyfield3 = defaultURLBody.stringByReplacingOccurrencesOfString("field3", withString: user, options: NSStringCompareOptions.LiteralSearch, range: nil)
-//        let tmpURLBodyfield4 = defaultURLBody.stringByReplacingOccurrencesOfString("field4", withString: user, options: NSStringCompareOptions.LiteralSearch, range: nil)
-//        let tmpURLBodyfield5 = defaultURLBody.stringByReplacingOccurrencesOfString("field5", withString: user, options: NSStringCompareOptions.LiteralSearch, range: nil)
-//        let tmpURLBodyfield6 = defaultURLBody.stringByReplacingOccurrencesOfString("field6", withString: user, options: NSStringCompareOptions.LiteralSearch, range: nil)
-//        let tmpURLBodyfield7 = defaultURLBody.stringByReplacingOccurrencesOfString("field7", withString: user, options: NSStringCompareOptions.LiteralSearch, range: nil)
-//        
-//        request.HTTPBody = newURLBody.dataUsingEncoding(NSUTF8StringEncoding)
+        let tmpURLBodyfield1 = defaultURLBody.stringByReplacingOccurrencesOfString("field1", withString: onTheMapDelegate.udacityStudentStruct.accountKey!, options: NSStringCompareOptions.LiteralSearch, range: nil)
         
-        request.HTTPBody = "{\"uniqueKey\": \"1234\", \"firstName\": \"John\", \"lastName\": \"Doe\",\"mapString\": \"Mountain View, CA\", \"mediaURL\": \"https://udacity.com\",\"latitude\": 37.386052, \"longitude\": -122.083851}".dataUsingEncoding(NSUTF8StringEncoding)
+        let tmpURLBodyfield2 = tmpURLBodyfield1.stringByReplacingOccurrencesOfString("field2", withString: onTheMapDelegate.udacityStudentStruct.firstName!, options: NSStringCompareOptions.LiteralSearch, range: nil)
+        let tmpURLBodyfield3 = tmpURLBodyfield2.stringByReplacingOccurrencesOfString("field3", withString: onTheMapDelegate.udacityStudentStruct.lastName!, options: NSStringCompareOptions.LiteralSearch, range: nil)
+        
+        let tmpURLBodyfield4 = tmpURLBodyfield3.stringByReplacingOccurrencesOfString("field4", withString: onTheMapDelegate.udacityStudentStruct.mapString!, options: NSStringCompareOptions.LiteralSearch, range: nil)
+        
+         let tmpURLBodyfield5 = tmpURLBodyfield4.stringByReplacingOccurrencesOfString("field5", withString: onTheMapDelegate.udacityStudentStruct.mediaURL!, options: NSStringCompareOptions.LiteralSearch, range: nil)
+        
+        let tmpURLBodyfield6 = tmpURLBodyfield5.stringByReplacingOccurrencesOfString("field6", withString: String(onTheMapDelegate.udacityStudentStruct.latitude!), options: NSStringCompareOptions.LiteralSearch, range: nil)
+        
+        let tmpURLBodyfield7 = tmpURLBodyfield6.stringByReplacingOccurrencesOfString("field7", withString: String(onTheMapDelegate.udacityStudentStruct.longitude!), options: NSStringCompareOptions.LiteralSearch, range: nil)
+        
+        request.HTTPBody = tmpURLBodyfield7.dataUsingEncoding(NSUTF8StringEncoding)
+        
+//        request.HTTPBody = "{\"uniqueKey\": \"1234\", \"firstName\": \"John\", \"lastName\": \"Doe\",\"mapString\": \"Mountain View, CA\", \"mediaURL\": \"https://udacity.com\",\"latitude\": 37.386052, \"longitude\": -122.083851}".dataUsingEncoding(NSUTF8StringEncoding)
         
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request)
@@ -178,19 +198,34 @@ class HttpsRequestManager
                 data, response, error in
             if error != nil
             { // Handle error…
-                
+                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_postStudentLocationSucceed", object: nil)
                 return
             }
-            print(NSString(data: data!, encoding: NSUTF8StringEncoding))
+            else
+            {
+                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_postStudentLocationSucceed", object: nil)
+                print(NSString(data: data!, encoding: NSUTF8StringEncoding))
+            }
         }
         task.resume()
     }
     
+    /*!
+    * @brief submitUserLoction
+    */
+    func submitUserLoction()
+    {
+        gettingPublicUserData()
+    }
+    
+    /*!
+    * @brief gettingPublicUserData
+    */
     func gettingPublicUserData()
     {
         let defaultURLBody: String =  "https://www.udacity.com/api/users/userID"
         
-        let tmpURLBodyUserID = defaultURLBody.stringByReplacingOccurrencesOfString("userID", withString: onTheMapDelegate.udacityLogInStruct.accountKey!, options: NSStringCompareOptions.LiteralSearch, range: nil)
+        let tmpURLBodyUserID = defaultURLBody.stringByReplacingOccurrencesOfString("userID", withString: onTheMapDelegate.udacityStudentStruct.accountKey!, options: NSStringCompareOptions.LiteralSearch, range: nil)
         
          let request = NSMutableURLRequest(URL: NSURL(string: tmpURLBodyUserID)!)
         
@@ -204,15 +239,20 @@ class HttpsRequestManager
                 }
                 else
                 {
-                    self.parseStudenPublicData(data!)
+                    let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) /* subset response data! */
+                    self.parseStudenPublicData(newData)
+
+                    // once we got all the needed information post the student location
+                    self.postingStudentsLocation()
                 }
-//                let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) /* subset response data! */
-//                print(NSString(data: newData, encoding: NSUTF8StringEncoding))
         }
         task.resume()
     }
     
     // MARK: - PARSERS methods
+    /*!
+    * @brief parseStudentsLocationsData
+    */
     func parseStudentsLocationsData(data: NSData)
     {
         do
@@ -232,34 +272,36 @@ class HttpsRequestManager
         }
     }
     
+    /*!
+    * @brief parseStudenPublicData
+    */
     func parseStudenPublicData(dataFromNetworking: NSData)
     {
-
-        let json: NSDictionary?
+        var json:NSDictionary = [:]
         
         do
         {
-            try json = NSJSONSerialization.JSONObjectWithData(dataFromNetworking, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary
+            try json = (NSJSONSerialization.JSONObjectWithData(dataFromNetworking, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary)!
+            
+            guard   let userDict = json["user"] as? [String: AnyObject],
+                    let lastName = userDict["last_name"] as? String,
+                    let firstName = userDict["first_name"] as? String else { /* report no user information */return }
+            
+            print("Hello : \(firstName) \(lastName)")
+            onTheMapDelegate.udacityStudentStruct.lastName = lastName
+            onTheMapDelegate.udacityStudentStruct.firstName = firstName
+            
         }
         catch let parseError as NSError
         {
             print(parseError.localizedDescription)
             return
         }
-        
-        guard let userDict = json?["user"] as? [String: AnyObject]
-            
-            else {
-                // report no user information
-                return
-        }
-        
-        if let last = userDict["last_name"] as? String
-        {
-            print("last : \(last)")
-        }
     }
     
+    /*!
+    * @brief parseUdacityLogInData
+    */
     func parseUdacityLogInData(dataFromNetworking: NSData)
     {
         //expected data
@@ -275,22 +317,22 @@ class HttpsRequestManager
                 
                 if let account_registered = json["account"]!["registered"] as! Bool?
                 {
-                    onTheMapDelegate.udacityLogInStruct.accountRegistered = account_registered
+                    onTheMapDelegate.udacityStudentStruct.accountRegistered = account_registered
                 }
                 
                 if let account_key = json["account"]!["key"] as! String?
                 {
-                    onTheMapDelegate.udacityLogInStruct.accountKey = account_key
+                    onTheMapDelegate.udacityStudentStruct.accountKey = account_key
                 }
                 
                 if let session_id = json["session"]!["id"] as! String?
                 {
-                    onTheMapDelegate.udacityLogInStruct.sessionID = session_id
+                    onTheMapDelegate.udacityStudentStruct.sessionID = session_id
                 }
                 
                 if let session_expiration = json["session"]!["expiration"] as! String?
                 {
-                    onTheMapDelegate.udacityLogInStruct.sessionExpiration = session_expiration
+                    onTheMapDelegate.udacityStudentStruct.sessionExpiration = session_expiration
                 }
             }
         }
