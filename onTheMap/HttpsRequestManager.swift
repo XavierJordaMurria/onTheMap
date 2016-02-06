@@ -47,7 +47,6 @@ class HttpsRequestManager
                 let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) /* subset response data! */
                 
                 self.parseUdacityLogInData(newData)
-                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInSucceed", object: nil)
             }
         }
         task.resume()
@@ -309,36 +308,74 @@ class HttpsRequestManager
         
         print("\(TAG)parseUdacityLogInDate")
         
+        var json:NSDictionary = [:]
+        
         do
         {
-            if let json = try NSJSONSerialization.JSONObjectWithData(dataFromNetworking, options: []) as? NSDictionary
+            try json = (NSJSONSerialization.JSONObjectWithData(dataFromNetworking, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary)!
+            
+            print(json)
+            
+            guard   let account = json["account"] as? [String: AnyObject],
+                    let account_registered = account["registered"] as? Bool,
+                    let account_key = account["key"] as? String,
+                    let session = json["session"] as? [String: AnyObject],
+                    let session_id = session["id"] as? String,
+                    let session_expiration = session["expiration"] as? String
+            else
             {
-                print(json)
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInFailed", object: nil)
+                })
                 
-                if let account_registered = json["account"]!["registered"] as! Bool?
-                {
-                    onTheMapDelegate.udacityStudentStruct.accountRegistered = account_registered
-                }
-                
-                if let account_key = json["account"]!["key"] as! String?
-                {
-                    onTheMapDelegate.udacityStudentStruct.accountKey = account_key
-                }
-                
-                if let session_id = json["session"]!["id"] as! String?
-                {
-                    onTheMapDelegate.udacityStudentStruct.sessionID = session_id
-                }
-                
-                if let session_expiration = json["session"]!["expiration"] as! String?
-                {
-                    onTheMapDelegate.udacityStudentStruct.sessionExpiration = session_expiration
-                }
+                return
             }
+            
+            onTheMapDelegate.udacityStudentStruct.accountRegistered = account_registered
+            onTheMapDelegate.udacityStudentStruct.accountKey = account_key
+            onTheMapDelegate.udacityStudentStruct.sessionID = session_id
+            onTheMapDelegate.udacityStudentStruct.sessionExpiration = session_expiration
+            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInSucceed", object: nil)
+            })
         }
-        catch let error as NSError
+        catch let parseError as NSError
         {
-            print(error.localizedDescription)
+            print(parseError.localizedDescription)
+            return
         }
+        
+//        do
+//        {
+//            if let json = try NSJSONSerialization.JSONObjectWithData(dataFromNetworking, options: []) as? NSDictionary
+//            {
+//                print(json)
+//                
+//                if let account_registered = json["account"]!["registered"] as! Bool
+//                {
+//                    onTheMapDelegate.udacityStudentStruct.accountRegistered = account_registered
+//                }
+//                
+//                if let account_key = json["account"]!["key"] as! String?
+//                {
+//                    onTheMapDelegate.udacityStudentStruct.accountKey = account_key
+//                }
+//                
+//                if let session_id = json["session"]!["id"] as! String?
+//                {
+//                    onTheMapDelegate.udacityStudentStruct.sessionID = session_id
+//                }
+//                
+//                if let session_expiration = json["session"]!["expiration"] as! String?
+//                {
+//                    onTheMapDelegate.udacityStudentStruct.sessionExpiration = session_expiration
+//                }
+//            }
+//        }
+//        catch let error as NSError
+//        {
+//            print(error.localizedDescription)
+//        }
     }
 }
