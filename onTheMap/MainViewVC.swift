@@ -52,6 +52,8 @@ class MainViewVC: UIViewController
     @IBAction func udacityLogIn(sender: AnyObject)
     {
 
+        userName.text = "loebre@gmail.com"
+        password.text = "sIRJORDAN21"
         
         if(!userName.hasText() || !password.hasText())
         {

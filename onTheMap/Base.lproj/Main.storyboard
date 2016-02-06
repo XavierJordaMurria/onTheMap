@@ -369,7 +369,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                     <variation key="widthClass=compact" misplaced="YES">
-                                                        <rect key="frame" x="104" y="0.0" width="117" height="44"/>
+                                                        <rect key="frame" x="104" y="0.0" width="117" height="43.5"/>
                                                     </variation>
                                                 </label>
                                             </subviews>
@@ -765,7 +765,7 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DSm-8W-ts3" userLabel="middleView">
                                         <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                         <subviews>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="aSF-BG-Dq8">
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Enter Location" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="aSF-BG-Dq8">
                                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
@@ -1055,6 +1055,13 @@
                                     </mask>
                                 </variation>
                             </view>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="h0q-nc-J1j">
+                                <rect key="frame" x="-10" y="-10" width="20" height="20"/>
+                                <color key="color" red="0.89861505679999998" green="0.43113481079999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="182" y="281" width="37" height="37"/>
+                                </variation>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -1070,6 +1077,7 @@
                             <mask key="subviews">
                                 <exclude reference="Tsw-7C-jCQ"/>
                                 <exclude reference="nkq-gi-R9S"/>
+                                <exclude reference="h0q-nc-J1j"/>
                             </mask>
                             <mask key="constraints">
                                 <exclude reference="4Vg-bt-NqL"/>
@@ -1085,6 +1093,7 @@
                             <mask key="subviews">
                                 <include reference="Tsw-7C-jCQ"/>
                                 <include reference="nkq-gi-R9S"/>
+                                <include reference="h0q-nc-J1j"/>
                             </mask>
                             <mask key="constraints">
                                 <include reference="4Vg-bt-NqL"/>
@@ -1099,6 +1108,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="ZZ2-vx-Mi4"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="h0q-nc-J1j" id="9BC-7o-Pbg"/>
                         <outlet property="firstView" destination="Tsw-7C-jCQ" id="qIx-U2-FUz"/>
                         <outlet property="mainView" destination="Qhc-if-Me2" id="tXI-n7-3sE"/>
                         <outlet property="mapView" destination="g7d-Dd-UGY" id="KiD-R4-f38"/>

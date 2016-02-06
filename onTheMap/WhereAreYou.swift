@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-class WhereAreYou: UIViewController
+class WhereAreYou: UIViewController, UITextViewDelegate
 {
         
     @IBOutlet weak var firstView: UIView!
@@ -18,12 +18,16 @@ class WhereAreYou: UIViewController
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var textViewAddress: UITextView!
     @IBOutlet weak var textViewURL: UITextView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     var onTheMapDelegate: OnTheMapAppDelegate = (UIApplication.sharedApplication().delegate as! OnTheMapAppDelegate)
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        
+        //add textViewAddress delegate
+        textViewAddress.delegate = self
         
         //Looks for single or multiple taps.
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
@@ -64,6 +68,12 @@ class WhereAreYou: UIViewController
         }
         else
         {
+            dispatch_async(dispatch_get_main_queue())
+            {
+                self.activityIndicator.hidden = false
+                self.activityIndicator.startAnimating()
+            }
+            
             let geocoder = CLGeocoder()
             
             geocoder.geocodeAddressString(textViewAddress.text, completionHandler: {(placemarks, error) -> Void in
@@ -81,6 +91,14 @@ class WhereAreYou: UIViewController
                     if let placemark = placemarks?.first
                     {
                         let coordinates:CLLocationCoordinate2D = placemark.location!.coordinate
+                        
+                        // set initial location
+                        let initialLocation = CLLocation(latitude: coordinates.latitude, longitude: coordinates.longitude)
+                        let regionRadius: CLLocationDistance = 1000
+                        
+                        let coordinateRegion = MKCoordinateRegionMakeWithDistance(initialLocation.coordinate,
+                            regionRadius * 2.0, regionRadius * 2.0)
+                        self.mapView.setRegion(coordinateRegion, animated: true)
                         self.mapView.addAnnotation(MKPlacemark(placemark: placemark))
                         
                         self.onTheMapDelegate.udacityStudentStruct.mapString = self.textViewAddress.text
@@ -88,8 +106,14 @@ class WhereAreYou: UIViewController
                         self.onTheMapDelegate.udacityStudentStruct.latitude = coordinates.latitude
                     }
                     
+                    dispatch_async(dispatch_get_main_queue())
+                    {
+                            self.activityIndicator.hidden = true
+                            self.activityIndicator.stopAnimating()
+                    }
+                    
                     self.secondView.hidden = false
-                    self.firstView.hidden = false
+                    self.firstView.hidden = true
                 }
             })
         }
@@ -105,6 +129,12 @@ class WhereAreYou: UIViewController
         }
         else
         {
+            dispatch_async(dispatch_get_main_queue())
+            {
+                    self.activityIndicator.hidden = false
+                    self.activityIndicator.startAnimating()
+            }
+            
             onTheMapDelegate.udacityStudentStruct.mediaURL = textViewURL.text
             HttpsRequestManager.sharedInstance.submitUserLoction()
         }
@@ -123,6 +153,12 @@ class WhereAreYou: UIViewController
     */
     func postStudentLocationSucceed()
     {
+        dispatch_async(dispatch_get_main_queue())
+        {
+                self.activityIndicator.hidden = true
+                self.activityIndicator.stopAnimating()
+        }
+        
         dismissViewControllerAnimated(true, completion: { () -> Void in })
     }
     
@@ -131,11 +167,24 @@ class WhereAreYou: UIViewController
     */
     func postStudentLocationFailed()
     {
+        dispatch_async(dispatch_get_main_queue())
+        {
+                self.activityIndicator.hidden = true
+                self.activityIndicator.stopAnimating()
+        }
+        
         let alert = UIAlertController(title: "Post Studen Location failure", message: "There has been an unknow problem posting your location. Please try again", preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)
         
         mainView.userInteractionEnabled = true
         secondView.hidden = true
+    }
+    
+    // MARK: - UITEXTVIEWDELEGATE METHODS
+    
+    func textViewDidBeginEditing(textView: UITextView)
+    {
+        textViewAddress.text = ""
     }
 }
