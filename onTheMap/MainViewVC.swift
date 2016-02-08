@@ -26,8 +26,8 @@ class MainViewVC: UIViewController
         view.addGestureRecognizer(tap)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "logInSucceed", name:"HTTPRequest_LogInSucceed", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "logInFailed", name:"HTTPRequest_LogInFailed", object: nil)
-
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "logInFailed", name:"HTTPRequest_LogInFailedConnection", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "logInFailedWrongCredentials", name:"HTTPRequest_LogInFailedCredentials", object: nil)
         mainView.userInteractionEnabled = true
     }
     
@@ -51,6 +51,8 @@ class MainViewVC: UIViewController
     
     @IBAction func udacityLogIn(sender: AnyObject)
     {
+        userName.text = "loebre@gmail.com"
+        password.text = "sIRJORDAN21"
 
         if(!userName.hasText() || !password.hasText())
         {
@@ -98,13 +100,30 @@ class MainViewVC: UIViewController
     }
     
     // MARK: - notifications
+    /*!
+    * @brief logInFailed notification got when couldn't stablish connection
+    */
     func logInFailed()
     {
         mainView.userInteractionEnabled = true
         activityIndicator.stopAnimating()
-        sendUserAlert("Alert",body: "Log In failed, check Username or Password")
+        sendUserAlert("Alert",body: "Log In failed, failure to connect")
     }
     
+    /*!
+    * @brief logInFailedWrongCredentials got when the user||password are wrong 
+    * and it is not possible to stablish a connection
+    */
+    func logInFailedWrongCredentials()
+    {
+        mainView.userInteractionEnabled = true
+        activityIndicator.stopAnimating()
+        sendUserAlert("Alert",body: "Account not found or invalid credentials.")
+    }
+    
+    /*!
+    * @brief logInSucceed notification got when the connection succed
+    */
     func logInSucceed()
     {
         dispatch_async(dispatch_get_main_queue(), { () -> Void in

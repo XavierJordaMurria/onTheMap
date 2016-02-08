@@ -39,7 +39,9 @@ class HttpsRequestManager
             // Handle error…
             if error != nil
             {
-                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInFailed", object: nil)
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInFailedConnection", object: nil)
+                })
                 return
             }
             else
@@ -77,13 +79,16 @@ class HttpsRequestManager
             
             if error != nil
             { // Handle error…
-                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogOutFailed", object: nil)
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogOutFailed", object: nil)
+                })
                 return
             }
             else
             {
-
-                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogOutSucceed", object: nil)
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogOutSucceed", object: nil)
+                })
             }
             
             let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) /* subset response data! */
@@ -119,7 +124,9 @@ class HttpsRequestManager
             
             if error != nil
             {
-                 NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInFailed", object: nil)
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                     NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInFailed", object: nil)
+                })
                 return
             }
             
@@ -127,7 +134,9 @@ class HttpsRequestManager
             
             print(NSString(data: newData, encoding: NSUTF8StringEncoding))
             
-            NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInSucceed", object: nil)
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInSucceed", object: nil)
+            })
         }
         
         task.resume()
@@ -138,7 +147,7 @@ class HttpsRequestManager
     */
     func gettingStudentsLocation()
     {
-        let request = NSMutableURLRequest(URL: NSURL(string: "https://api.parse.com/1/classes/StudentLocation")!)
+        let request = NSMutableURLRequest(URL: NSURL(string: "https://api.parse.com/1/Aclasses/AStudentLocation")!)
         request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
         
@@ -150,7 +159,9 @@ class HttpsRequestManager
                 // Handle error...
                 if error != nil
                 {
-                    NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationFailed", object: nil)
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationFailed", object: nil)
+                    })
                     return
                 }
                 else
@@ -197,13 +208,18 @@ class HttpsRequestManager
                 data, response, error in
             if error != nil
             { // Handle error…
-                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_postStudentLocationSucceed", object: nil)
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_postStudentLocationSucceed", object: nil)
+                })
+
                 return
             }
             else
             {
-                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_postStudentLocationSucceed", object: nil)
-                print(NSString(data: data!, encoding: NSUTF8StringEncoding))
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_postStudentLocationSucceed", object: nil)
+                    print(NSString(data: data!, encoding: NSUTF8StringEncoding))
+                })
             }
         }
         task.resume()
@@ -325,7 +341,7 @@ class HttpsRequestManager
             else
             {
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInFailed", object: nil)
+                    NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInFailedCredentials", object: nil)
                 })
                 
                 return
@@ -345,37 +361,5 @@ class HttpsRequestManager
             print(parseError.localizedDescription)
             return
         }
-        
-//        do
-//        {
-//            if let json = try NSJSONSerialization.JSONObjectWithData(dataFromNetworking, options: []) as? NSDictionary
-//            {
-//                print(json)
-//                
-//                if let account_registered = json["account"]!["registered"] as! Bool
-//                {
-//                    onTheMapDelegate.udacityStudentStruct.accountRegistered = account_registered
-//                }
-//                
-//                if let account_key = json["account"]!["key"] as! String?
-//                {
-//                    onTheMapDelegate.udacityStudentStruct.accountKey = account_key
-//                }
-//                
-//                if let session_id = json["session"]!["id"] as! String?
-//                {
-//                    onTheMapDelegate.udacityStudentStruct.sessionID = session_id
-//                }
-//                
-//                if let session_expiration = json["session"]!["expiration"] as! String?
-//                {
-//                    onTheMapDelegate.udacityStudentStruct.sessionExpiration = session_expiration
-//                }
-//            }
-//        }
-//        catch let error as NSError
-//        {
-//            print(error.localizedDescription)
-//        }
     }
 }

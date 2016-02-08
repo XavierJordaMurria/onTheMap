@@ -8,7 +8,7 @@
 
 import Foundation
 
-class studentModel
+struct studentModel
 {
     var accountRegistered: Bool?
     var accountKey: String?
