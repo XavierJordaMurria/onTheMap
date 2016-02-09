@@ -78,7 +78,7 @@ class MapViewController: UIViewController, MKMapViewDelegate
         
         // The "locations" array is an array of dictionary objects that are similar to the JSON
         // data that you can download from parse.
-        let studentsDataLoc: NSArray = onTheMapDelegate.studentsLocationDic["results"] as! NSArray
+        let studentsDataLoc: NSArray = onTheMapDelegate.studentsLocationArray!
         
         // We will create an MKPointAnnotation for each dictionary in "locations". The
         // point annotations will be stored in this array, and then provided to the map view.

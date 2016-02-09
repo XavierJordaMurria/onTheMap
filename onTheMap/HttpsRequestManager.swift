@@ -147,7 +147,7 @@ class HttpsRequestManager
     */
     func gettingStudentsLocation()
     {
-        let request = NSMutableURLRequest(URL: NSURL(string: "https://api.parse.com/1/Aclasses/AStudentLocation")!)
+        let request = NSMutableURLRequest(URL: NSURL(string: "https://api.parse.com/1/classes/StudentLocation")!)
         request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
         
@@ -199,8 +199,6 @@ class HttpsRequestManager
         let tmpURLBodyfield7 = tmpURLBodyfield6.stringByReplacingOccurrencesOfString("field7", withString: String(onTheMapDelegate.udacityStudentStruct.longitude!), options: NSStringCompareOptions.LiteralSearch, range: nil)
         
         request.HTTPBody = tmpURLBodyfield7.dataUsingEncoding(NSUTF8StringEncoding)
-        
-//        request.HTTPBody = "{\"uniqueKey\": \"1234\", \"firstName\": \"John\", \"lastName\": \"Doe\",\"mapString\": \"Mountain View, CA\", \"mediaURL\": \"https://udacity.com\",\"latitude\": 37.386052, \"longitude\": -122.083851}".dataUsingEncoding(NSUTF8StringEncoding)
         
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request)
@@ -274,16 +272,21 @@ class HttpsRequestManager
         {
             if let jsonResult = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSDictionary
             {
-                onTheMapDelegate.studentsLocationDic = jsonResult
-                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationSucceed", object: nil)
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                     NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationSucceed", object: nil)
+                })
                 
-                print(onTheMapDelegate.studentsLocationDic)
+                onTheMapDelegate.studentsLocationArray = jsonResult["results"] as? NSArray
+                
+                print(onTheMapDelegate.studentsLocationArray)
             }
         }
         catch let error as NSError
         {
-            NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationFailed", object: nil)
-            print(error.localizedDescription)
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationFailed", object: nil)
+                print(error.localizedDescription)
+            })
         }
     }
     

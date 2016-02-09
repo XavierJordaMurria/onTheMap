@@ -21,9 +21,9 @@ class TabViewController: UIViewController, UINavigationControllerDelegate
     
     override func viewDidLoad()
     {
-        // The "locations" array is an array of dictionary objects that are similar to the JSON
+        // The "locations" array is an array of dictionary objects that are equal to the JSON
         // data that you can download from parse.
-        studentsDataLoc = onTheMapDelegate.studentsLocationDic["results"] as? NSArray
+        studentsDataLoc = onTheMapDelegate.studentsLocationArray
         
         //LogIn Notifications listener
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "studentsLocationSucceed", name:"HTTPRequest_StudentsLocationSucceed", object: nil)
@@ -114,7 +114,7 @@ class TabViewController: UIViewController, UINavigationControllerDelegate
     {
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.uiBusy.stopAnimating()
-            self.studentsDataLoc = self.onTheMapDelegate.studentsLocationDic["results"] as? NSArray
+            self.studentsDataLoc = self.onTheMapDelegate.studentsLocationArray
             
             let refreshButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: "refreshButton:")
             self.navigationItem.rightBarButtonItem = refreshButton

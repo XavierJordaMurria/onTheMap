@@ -15,7 +15,7 @@ class OnTheMapAppDelegate: UIResponder, UIApplicationDelegate
     
     var udacityStudentStruct = studentModel()
     
-    var studentsLocationDic:NSDictionary = [:]
+    var studentsLocationArray: NSArray?
     
     let themeColor = UIColor(red: 0.01, green: 0.41, blue: 0.22, alpha: 1.0)
     
