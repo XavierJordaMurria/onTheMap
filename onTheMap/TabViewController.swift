@@ -36,6 +36,8 @@ class TabViewController: UIViewController, UINavigationControllerDelegate
     
     override func viewWillAppear(animated: Bool)
     {
+//        studentsDataLoc!.sort({$0.createdAt < $1.createdAt})
+        
         tableView.reloadData()
     }
     
@@ -59,8 +61,48 @@ class TabViewController: UIViewController, UINavigationControllerDelegate
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     {
-        currentIntdex = indexPath.row
-        performSegueWithIdentifier("tab2DetailsView", sender: self)
+        let studentLocation = studentsDataLoc![indexPath.row]
+        
+        let app = UIApplication.sharedApplication()
+        
+        if let toOpen = studentLocation["mediaURL"] as! String?
+        {
+            if(verifyUrl(toOpen))
+            {
+                app.openURL(NSURL(string: toOpen)!)
+            }
+            else
+            {
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    let alert = UIAlertController(title: "Invalid URL", message: "The URL has a wrong format", preferredStyle: UIAlertControllerStyle.Alert)
+                    alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+                    self.presentViewController(alert, animated: true, completion: nil)
+                })
+            }
+        }
+        else
+        {
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                let alert = UIAlertController(title: "No URL", message: "The URL is empty", preferredStyle: UIAlertControllerStyle.Alert)
+                alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+                self.presentViewController(alert, animated: true, completion: nil)
+            })
+        }
+    }
+    
+    func verifyUrl (urlString: String?) -> Bool
+    {
+        //Check for nil
+        if let urlString = urlString
+        {
+            // create NSURL instance
+            if let url = NSURL(string: urlString)
+            {
+                // check if your application can open the NSURL instance
+                return UIApplication.sharedApplication().canOpenURL(url)
+            }
+        }
+        return false
     }
     
     // MARK: - IBAcctions
