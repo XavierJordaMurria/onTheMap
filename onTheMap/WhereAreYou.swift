@@ -1,4 +1,4 @@
-    //
+//
 //  WhereAreYou.swift
 //  onTheMap
 //
@@ -20,14 +20,13 @@ class WhereAreYou: UIViewController, UITextViewDelegate
     @IBOutlet weak var textViewURL: UITextView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
-    var onTheMapDelegate: OnTheMapAppDelegate = (UIApplication.sharedApplication().delegate as! OnTheMapAppDelegate)
-    
     override func viewDidLoad()
     {
         super.viewDidLoad()
         
         //add textViewAddress delegate
         textViewAddress.delegate = self
+        textViewURL.delegate = self
         
         //Looks for single or multiple taps.
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
@@ -85,6 +84,12 @@ class WhereAreYou: UIViewController, UITextViewDelegate
                     
                     alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
                     self.presentViewController(alert, animated: true, completion: nil)
+                    
+                    dispatch_async(dispatch_get_main_queue())
+                    {
+                            self.activityIndicator.hidden = true
+                            self.activityIndicator.stopAnimating()
+                    }
                 }
                 else
                 {
@@ -101,9 +106,9 @@ class WhereAreYou: UIViewController, UITextViewDelegate
                         self.mapView.setRegion(coordinateRegion, animated: true)
                         self.mapView.addAnnotation(MKPlacemark(placemark: placemark))
                         
-                        self.onTheMapDelegate.udacityStudentStruct.mapString = self.textViewAddress.text
-                        self.onTheMapDelegate.udacityStudentStruct.longitude = coordinates.longitude
-                        self.onTheMapDelegate.udacityStudentStruct.latitude = coordinates.latitude
+                        DataModel.sharedInstance.udacityStudentStruct.mapString = self.textViewAddress.text
+                        DataModel.sharedInstance.udacityStudentStruct.longitude = coordinates.longitude
+                        DataModel.sharedInstance.udacityStudentStruct.latitude = coordinates.latitude
                     }
                     
                     dispatch_async(dispatch_get_main_queue())
@@ -135,10 +140,11 @@ class WhereAreYou: UIViewController, UITextViewDelegate
                     self.activityIndicator.startAnimating()
             }
             
-            onTheMapDelegate.udacityStudentStruct.mediaURL = textViewURL.text
+            DataModel.sharedInstance.udacityStudentStruct.mediaURL = textViewURL.text
             HttpsRequestManager.sharedInstance.submitUserLoction()
         }
     }
+    
     // MARK: - Keyboard methods
     //Calls this function when the tap is recognized.
     func dismissKeyboard()
@@ -185,6 +191,6 @@ class WhereAreYou: UIViewController, UITextViewDelegate
     
     func textViewDidBeginEditing(textView: UITextView)
     {
-        textViewAddress.text = ""
+        textView.text = ""
     }
 }

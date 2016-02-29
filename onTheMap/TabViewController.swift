@@ -11,7 +11,7 @@ class TabViewController: UIViewController, UINavigationControllerDelegate
 {
     var onTheMapDelegate: OnTheMapAppDelegate = (UIApplication.sharedApplication().delegate as! OnTheMapAppDelegate)
     var currentIntdex: Int? = nil
-    var studentsDataLoc: NSArray?
+    var studentsDataLoc : [StudentModel] = []
     let uiBusy = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
     
     @IBOutlet weak var tableView: UITableView!
@@ -23,7 +23,7 @@ class TabViewController: UIViewController, UINavigationControllerDelegate
     {
         // The "locations" array is an array of dictionary objects that are equal to the JSON
         // data that you can download from parse.
-        studentsDataLoc = onTheMapDelegate.studentsLocationArray
+        studentsDataLoc = DataModel.sharedInstance.studentsLocationArray
         
         //LogIn Notifications listener
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "studentsLocationSucceed", name:"HTTPRequest_StudentsLocationSucceed", object: nil)
@@ -36,23 +36,23 @@ class TabViewController: UIViewController, UINavigationControllerDelegate
     
     override func viewWillAppear(animated: Bool)
     {
-//        studentsDataLoc!.sort({$0.createdAt < $1.createdAt})
+        studentsDataLoc.sortInPlace({$0.createdAt < $1.createdAt})
         
         tableView.reloadData()
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        return studentsDataLoc!.count
+        return studentsDataLoc.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
-        let studentLocation = studentsDataLoc![indexPath.row]
+        let studentLocation = studentsDataLoc[indexPath.row]
         
         let cell = tableView.dequeueReusableCellWithIdentifier("cell") as? StudentTableCells!
-        let name:String =  studentLocation["firstName"] as! String
-        let lastName:String = studentLocation["lastName"] as! String
+        let name:String =  studentLocation.firstName!
+        let lastName:String = studentLocation.lastName!
             
         cell!.studentCellName.text = "\(name) \(lastName)"
         
@@ -61,13 +61,13 @@ class TabViewController: UIViewController, UINavigationControllerDelegate
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     {
-        let studentLocation = studentsDataLoc![indexPath.row]
+        let studentLocation = studentsDataLoc[indexPath.row]
         
         let app = UIApplication.sharedApplication()
         
-        if let toOpen = studentLocation["mediaURL"] as! String?
+        if let toOpen = studentLocation.mediaURL 
         {
-            if(verifyUrl(toOpen))
+            if(DataModel.sharedInstance.verifyUrl(toOpen))
             {
                 app.openURL(NSURL(string: toOpen)!)
             }
@@ -88,21 +88,6 @@ class TabViewController: UIViewController, UINavigationControllerDelegate
                 self.presentViewController(alert, animated: true, completion: nil)
             })
         }
-    }
-    
-    func verifyUrl (urlString: String?) -> Bool
-    {
-        //Check for nil
-        if let urlString = urlString
-        {
-            // create NSURL instance
-            if let url = NSURL(string: urlString)
-            {
-                // check if your application can open the NSURL instance
-                return UIApplication.sharedApplication().canOpenURL(url)
-            }
-        }
-        return false
     }
     
     // MARK: - IBAcctions
@@ -156,7 +141,7 @@ class TabViewController: UIViewController, UINavigationControllerDelegate
     {
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.uiBusy.stopAnimating()
-            self.studentsDataLoc = self.onTheMapDelegate.studentsLocationArray
+            self.studentsDataLoc = DataModel.sharedInstance.studentsLocationArray
             
             let refreshButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: "refreshButton:")
             self.navigationItem.rightBarButtonItem = refreshButton

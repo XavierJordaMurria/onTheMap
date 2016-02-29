@@ -13,7 +13,6 @@ class HttpsRequestManager
     static let sharedInstance = HttpsRequestManager()
     
     let TAG: String = "HttpsRequestManager: "
-    var onTheMapDelegate: OnTheMapAppDelegate = (UIApplication.sharedApplication().delegate as! OnTheMapAppDelegate)
     
     /*!
     * @brief udacityLogIn
@@ -184,19 +183,18 @@ class HttpsRequestManager
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
         let defaultURLBody: String = "{\"uniqueKey\": \"field1\", \"firstName\": \"field2\", \"lastName\": \"field3\",\"mapString\": \"field4\", \"mediaURL\": \"field5\",\"latitude\": field6, \"longitude\":field7}"
+        let tmpURLBodyfield1 = defaultURLBody.stringByReplacingOccurrencesOfString("field1", withString: DataModel.sharedInstance.udacityStudentStruct.accountKey!, options: NSStringCompareOptions.LiteralSearch, range: nil)
         
-        let tmpURLBodyfield1 = defaultURLBody.stringByReplacingOccurrencesOfString("field1", withString: onTheMapDelegate.udacityStudentStruct.accountKey!, options: NSStringCompareOptions.LiteralSearch, range: nil)
+        let tmpURLBodyfield2 = tmpURLBodyfield1.stringByReplacingOccurrencesOfString("field2", withString: DataModel.sharedInstance.udacityStudentStruct.firstName!, options: NSStringCompareOptions.LiteralSearch, range: nil)
+        let tmpURLBodyfield3 = tmpURLBodyfield2.stringByReplacingOccurrencesOfString("field3", withString: DataModel.sharedInstance.udacityStudentStruct.lastName!, options: NSStringCompareOptions.LiteralSearch, range: nil)
         
-        let tmpURLBodyfield2 = tmpURLBodyfield1.stringByReplacingOccurrencesOfString("field2", withString: onTheMapDelegate.udacityStudentStruct.firstName!, options: NSStringCompareOptions.LiteralSearch, range: nil)
-        let tmpURLBodyfield3 = tmpURLBodyfield2.stringByReplacingOccurrencesOfString("field3", withString: onTheMapDelegate.udacityStudentStruct.lastName!, options: NSStringCompareOptions.LiteralSearch, range: nil)
+        let tmpURLBodyfield4 = tmpURLBodyfield3.stringByReplacingOccurrencesOfString("field4", withString: DataModel.sharedInstance.udacityStudentStruct.mapString!, options: NSStringCompareOptions.LiteralSearch, range: nil)
         
-        let tmpURLBodyfield4 = tmpURLBodyfield3.stringByReplacingOccurrencesOfString("field4", withString: onTheMapDelegate.udacityStudentStruct.mapString!, options: NSStringCompareOptions.LiteralSearch, range: nil)
+         let tmpURLBodyfield5 = tmpURLBodyfield4.stringByReplacingOccurrencesOfString("field5", withString: DataModel.sharedInstance.udacityStudentStruct.mediaURL!, options: NSStringCompareOptions.LiteralSearch, range: nil)
         
-         let tmpURLBodyfield5 = tmpURLBodyfield4.stringByReplacingOccurrencesOfString("field5", withString: onTheMapDelegate.udacityStudentStruct.mediaURL!, options: NSStringCompareOptions.LiteralSearch, range: nil)
+        let tmpURLBodyfield6 = tmpURLBodyfield5.stringByReplacingOccurrencesOfString("field6", withString: String(DataModel.sharedInstance.udacityStudentStruct.latitude!), options: NSStringCompareOptions.LiteralSearch, range: nil)
         
-        let tmpURLBodyfield6 = tmpURLBodyfield5.stringByReplacingOccurrencesOfString("field6", withString: String(onTheMapDelegate.udacityStudentStruct.latitude!), options: NSStringCompareOptions.LiteralSearch, range: nil)
-        
-        let tmpURLBodyfield7 = tmpURLBodyfield6.stringByReplacingOccurrencesOfString("field7", withString: String(onTheMapDelegate.udacityStudentStruct.longitude!), options: NSStringCompareOptions.LiteralSearch, range: nil)
+        let tmpURLBodyfield7 = tmpURLBodyfield6.stringByReplacingOccurrencesOfString("field7", withString: String(DataModel.sharedInstance.udacityStudentStruct.longitude!), options: NSStringCompareOptions.LiteralSearch, range: nil)
         
         request.HTTPBody = tmpURLBodyfield7.dataUsingEncoding(NSUTF8StringEncoding)
         
@@ -238,7 +236,7 @@ class HttpsRequestManager
     {
         let defaultURLBody: String =  "https://www.udacity.com/api/users/userID"
         
-        let tmpURLBodyUserID = defaultURLBody.stringByReplacingOccurrencesOfString("userID", withString: onTheMapDelegate.udacityStudentStruct.accountKey!, options: NSStringCompareOptions.LiteralSearch, range: nil)
+        let tmpURLBodyUserID = defaultURLBody.stringByReplacingOccurrencesOfString("userID", withString: DataModel.sharedInstance.udacityStudentStruct.accountKey!, options: NSStringCompareOptions.LiteralSearch, range: nil)
         
          let request = NSMutableURLRequest(URL: NSURL(string: tmpURLBodyUserID)!)
         
@@ -264,7 +262,8 @@ class HttpsRequestManager
     
     // MARK: - PARSERS methods
     /*!
-    * @brief parseStudentsLocationsData
+    * @brief parseStudentsLocationsData. it receives a json object containg 100 internal objects(dictionaries)
+    * representing the students information.
     */
     func parseStudentsLocationsData(data: NSData)
     {
@@ -272,21 +271,28 @@ class HttpsRequestManager
         {
             if let jsonResult = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSDictionary
             {
+                let tmpArr = jsonResult["results"] as? NSArray
+                
+                print(tmpArr)
+
+                for model in tmpArr!
+                {
+                    guard   let modelDic = model as? NSDictionary
+                        else    { break }
+                    
+                    let studentModel =  StudentModel(studentsLoctionProperties: modelDic)
+                    DataModel.sharedInstance.studentsLocationArray.append(studentModel)
+                }
+                    
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                     NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationSucceed", object: nil)
+                    NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationSucceed", object: nil)
                 })
-                
-                onTheMapDelegate.studentsLocationArray = jsonResult["results"] as? NSArray
-                
-                print(onTheMapDelegate.studentsLocationArray)
             }
         }
-        catch let error as NSError
+        catch let parseError as NSError
         {
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationFailed", object: nil)
-                print(error.localizedDescription)
-            })
+            print(parseError.localizedDescription)
+            return
         }
     }
     
@@ -306,8 +312,8 @@ class HttpsRequestManager
                     let firstName = userDict["first_name"] as? String else { /* report no user information */return }
             
             print("Hello : \(firstName) \(lastName)")
-            onTheMapDelegate.udacityStudentStruct.lastName = lastName
-            onTheMapDelegate.udacityStudentStruct.firstName = firstName
+            DataModel.sharedInstance.udacityStudentStruct.lastName = lastName
+            DataModel.sharedInstance.udacityStudentStruct.firstName = firstName
             
         }
         catch let parseError as NSError
@@ -350,10 +356,10 @@ class HttpsRequestManager
                 return
             }
             
-            onTheMapDelegate.udacityStudentStruct.accountRegistered = account_registered
-            onTheMapDelegate.udacityStudentStruct.accountKey = account_key
-            onTheMapDelegate.udacityStudentStruct.sessionID = session_id
-            onTheMapDelegate.udacityStudentStruct.sessionExpiration = session_expiration
+            DataModel.sharedInstance.udacityStudentStruct.accountRegistered = account_registered
+            DataModel.sharedInstance.udacityStudentStruct.accountKey = account_key
+            DataModel.sharedInstance.udacityStudentStruct.sessionID = session_id
+            DataModel.sharedInstance.udacityStudentStruct.sessionExpiration = session_expiration
             
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInSucceed", object: nil)

@@ -78,7 +78,7 @@ class MapViewController: UIViewController, MKMapViewDelegate
         
         // The "locations" array is an array of dictionary objects that are similar to the JSON
         // data that you can download from parse.
-        let studentsDataLoc: NSArray = onTheMapDelegate.studentsLocationArray!
+        let studentsDataLoc: [StudentModel] = DataModel.sharedInstance.studentsLocationArray
         
         // We will create an MKPointAnnotation for each dictionary in "locations". The
         // point annotations will be stored in this array, and then provided to the map view.
@@ -87,8 +87,8 @@ class MapViewController: UIViewController, MKMapViewDelegate
         for value in studentsDataLoc
         {
             let location = CLLocationCoordinate2D(
-                latitude: value["latitude"] as! Double,
-                longitude: value["longitude"] as! Double
+                latitude: value.latitude!,
+                longitude: value.longitude!
             )
             
             let annotation = MKPointAnnotation()
@@ -96,12 +96,12 @@ class MapViewController: UIViewController, MKMapViewDelegate
             
             var name:String = ""
             
-            if let first = value["firstName"] as! String?
+            if let first = value.firstName as String?
             {
                 // this code will be called
                 name = "\(first) "
                 
-                if let last = value["lastName"] as! String?
+                if let last = value.lastName as String?
                 {
                     name = "\(name) \(last)"
                 }
@@ -109,7 +109,7 @@ class MapViewController: UIViewController, MKMapViewDelegate
             
             annotation.title = name
             
-            if let pinURL = value["mediaURL"] as! String?
+            if let pinURL = value.mediaURL as String?
             {
                  annotation.subtitle = pinURL
             }
@@ -187,7 +187,18 @@ class MapViewController: UIViewController, MKMapViewDelegate
             
             if let toOpen = view.annotation?.subtitle!
             {
-                app.openURL(NSURL(string: toOpen)!)
+                if(DataModel.sharedInstance.verifyUrl(toOpen))
+                {
+                    app.openURL(NSURL(string: toOpen)!)
+                }
+                else
+                {
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        let alert = UIAlertController(title: "Invalid URL", message: "The URL has a wrong format", preferredStyle: UIAlertControllerStyle.Alert)
+                        alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+                        self.presentViewController(alert, animated: true, completion: nil)
+                    })
+                }
             }
         }
     }
