@@ -120,6 +120,12 @@ class WhereAreYou: UIViewController, UITextViewDelegate
             alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
         }
+        else if(!Reachability.isConnectedToNetwork())
+        {
+            let alert = UIAlertController(title: "No internet connection", message: "Please enable the wifi or connect to a wifi network to realize this action", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
         else
         {
             showhideActivityIndicator(false)

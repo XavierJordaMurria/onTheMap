@@ -301,20 +301,18 @@ class HttpsRequestManager
     */
     func parseStudenPublicData(dataFromNetworking: NSData)
     {
-        var json:NSDictionary = [:]
-        
         do
         {
-            try json = (NSJSONSerialization.JSONObjectWithData(dataFromNetworking, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary)!
-            
-            guard   let userDict = json["user"] as? [String: AnyObject],
-                    let lastName = userDict["last_name"] as? String,
-                    let firstName = userDict["first_name"] as? String else { /* report no user information */return }
-            
-            print("Hello : \(firstName) \(lastName)")
-            DataModel.sharedInstance.udacityStudentStruct.lastName = lastName
-            DataModel.sharedInstance.udacityStudentStruct.firstName = firstName
-            
+            if let json = try (NSJSONSerialization.JSONObjectWithData(dataFromNetworking, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary)
+            {
+                guard   let userDict = json["user"] as? [String: AnyObject],
+                        let lastName = userDict["last_name"] as? String,
+                        let firstName = userDict["first_name"] as? String else { /* report no user information */return }
+                
+                print("Hello : \(firstName) \(lastName)")
+                DataModel.sharedInstance.udacityStudentStruct.lastName = lastName
+                DataModel.sharedInstance.udacityStudentStruct.firstName = firstName
+            }
         }
         catch let parseError as NSError
         {
@@ -333,37 +331,36 @@ class HttpsRequestManager
         
         print("\(TAG)parseUdacityLogInDate")
         
-        var json:NSDictionary = [:]
-        
         do
         {
-            try json = (NSJSONSerialization.JSONObjectWithData(dataFromNetworking, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary)!
-            
-            print(json)
-            
-            guard   let account = json["account"] as? [String: AnyObject],
-                    let account_registered = account["registered"] as? Bool,
-                    let account_key = account["key"] as? String,
-                    let session = json["session"] as? [String: AnyObject],
-                    let session_id = session["id"] as? String,
-                    let session_expiration = session["expiration"] as? String
-            else
+            if let json = try (NSJSONSerialization.JSONObjectWithData(dataFromNetworking, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary)
             {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInFailedCredentials", object: nil)
-                })
+                print(json)
                 
-                return
+                guard   let account = json["account"] as? [String: AnyObject],
+                        let account_registered = account["registered"] as? Bool,
+                        let account_key = account["key"] as? String,
+                        let session = json["session"] as? [String: AnyObject],
+                        let session_id = session["id"] as? String,
+                        let session_expiration = session["expiration"] as? String
+                else
+                {
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInFailedCredentials", object: nil)
+                    })
+                    
+                    return
+                }
+                
+                DataModel.sharedInstance.udacityStudentStruct.accountRegistered = account_registered
+                DataModel.sharedInstance.udacityStudentStruct.accountKey = account_key
+                DataModel.sharedInstance.udacityStudentStruct.sessionID = session_id
+                DataModel.sharedInstance.udacityStudentStruct.sessionExpiration = session_expiration
+                
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInSucceed", object: nil)
+                })
             }
-            
-            DataModel.sharedInstance.udacityStudentStruct.accountRegistered = account_registered
-            DataModel.sharedInstance.udacityStudentStruct.accountKey = account_key
-            DataModel.sharedInstance.udacityStudentStruct.sessionID = session_id
-            DataModel.sharedInstance.udacityStudentStruct.sessionExpiration = session_expiration
-            
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInSucceed", object: nil)
-            })
         }
         catch let parseError as NSError
         {

@@ -76,15 +76,11 @@ class MapViewController: UIViewController, MKMapViewDelegate
         //clean the mapView for the new studentsLocations
         mapView.removeAnnotations(mapView.annotations)
         
-        // The "locations" array is an array of dictionary objects that are similar to the JSON
-        // data that you can download from parse.
-        let studentsDataLoc: [StudentModel] = DataModel.sharedInstance.studentsLocationArray
-        
         // We will create an MKPointAnnotation for each dictionary in "locations". The
         // point annotations will be stored in this array, and then provided to the map view.
         var annotations = [MKPointAnnotation]()
         
-        for value in studentsDataLoc
+        for value in DataModel.sharedInstance.studentsLocationArray
         {
             let location = CLLocationCoordinate2D(
                 latitude: value.latitude!,

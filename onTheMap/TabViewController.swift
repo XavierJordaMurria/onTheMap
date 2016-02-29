@@ -11,19 +11,16 @@ class TabViewController: UIViewController, UINavigationControllerDelegate
 {
     var onTheMapDelegate: OnTheMapAppDelegate = (UIApplication.sharedApplication().delegate as! OnTheMapAppDelegate)
     var currentIntdex: Int? = nil
-    var studentsDataLoc : [StudentModel] = []
     let uiBusy = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var refresh: UIBarButtonItem!
     
     // MARK: -
-    
     override func viewDidLoad()
     {
         // The "locations" array is an array of dictionary objects that are equal to the JSON
         // data that you can download from parse.
-        studentsDataLoc = DataModel.sharedInstance.studentsLocationArray
         
         //LogIn Notifications listener
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "studentsLocationSucceed", name:"HTTPRequest_StudentsLocationSucceed", object: nil)
@@ -36,19 +33,19 @@ class TabViewController: UIViewController, UINavigationControllerDelegate
     
     override func viewWillAppear(animated: Bool)
     {
-        studentsDataLoc.sortInPlace({$0.createdAt < $1.createdAt})
+        DataModel.sharedInstance.studentsLocationArray.sortInPlace({$0.updatedAt < $1.updatedAt})
         
         tableView.reloadData()
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        return studentsDataLoc.count
+        return DataModel.sharedInstance.studentsLocationArray.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
-        let studentLocation = studentsDataLoc[indexPath.row]
+        let studentLocation = DataModel.sharedInstance.studentsLocationArray[indexPath.row]
         
         let cell = tableView.dequeueReusableCellWithIdentifier("cell") as? StudentTableCells!
         let name:String =  studentLocation.firstName!
@@ -61,7 +58,7 @@ class TabViewController: UIViewController, UINavigationControllerDelegate
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     {
-        let studentLocation = studentsDataLoc[indexPath.row]
+        let studentLocation = DataModel.sharedInstance.studentsLocationArray[indexPath.row]
         
         let app = UIApplication.sharedApplication()
         
@@ -141,7 +138,6 @@ class TabViewController: UIViewController, UINavigationControllerDelegate
     {
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.uiBusy.stopAnimating()
-            self.studentsDataLoc = DataModel.sharedInstance.studentsLocationArray
             
             let refreshButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: "refreshButton:")
             self.navigationItem.rightBarButtonItem = refreshButton
