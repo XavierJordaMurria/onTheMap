@@ -25,6 +25,7 @@ class MapViewController: UIViewController, MKMapViewDelegate
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "studentsLocationSucceed", name:"HTTPRequest_StudentsLocationSucceed", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "studentsLocationFailed", name:"HTTPRequest_StudentsLocationFailed", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "studentsLocationUnauthorized", name:"HTTPRequest_StudentsLocationUnauthorized", object: nil)
         
         //Log Out Notifications Listener
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "logOutSucceed", name:"HTTPRequest_LogOutSucceed", object: nil)
@@ -129,6 +130,16 @@ class MapViewController: UIViewController, MKMapViewDelegate
             let alert = UIAlertController(title: "Failed loading data", message: "loading students location has failed for unknown reasons", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
+        })
+    }
+    
+    func studentsLocationUnauthorized()
+    {
+        dispatch_async(dispatch_get_main_queue(),
+        { () -> Void in
+                let alert = UIAlertController(title: "Failed loading data", message: "loading students location has failed Unauthorized", preferredStyle: UIAlertControllerStyle.Alert)
+                alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+                self.presentViewController(alert, animated: true, completion: nil)
         })
     }
     

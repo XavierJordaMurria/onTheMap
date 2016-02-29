@@ -274,11 +274,39 @@ class HttpsRequestManager
         {
             if let jsonResult = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSDictionary
             {
-                let tmpArr = jsonResult["results"] as? NSArray
+                guard let tmpArr = jsonResult["results"] as? NSArray
+                else
+                {
+                    guard let tmpErr = jsonResult["error"] as? NSString
+                    else
+                    {
+                        dispatch_async(dispatch_get_main_queue(),
+                        { () -> Void in
+                                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationFailed", object: nil)
+                        })
+                        return
+                    }
+                    
+                    if(tmpErr == "unauthorized")
+                    {
+                        dispatch_async(dispatch_get_main_queue(),
+                        { () -> Void in
+                                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationUnauthorized", object: nil)
+                        })
+                    }
+                    else
+                    {
+                        dispatch_async(dispatch_get_main_queue(),
+                        { () -> Void in
+                                NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationFailed", object: nil)
+                        })
+                    }
+                    return
+                }
                 
                 print(tmpArr)
 
-                for model in tmpArr!
+                for model in tmpArr
                 {
                     guard   let modelDic = model as? NSDictionary
                         else    { break }
