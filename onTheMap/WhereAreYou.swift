@@ -67,11 +67,7 @@ class WhereAreYou: UIViewController, UITextViewDelegate
         }
         else
         {
-            dispatch_async(dispatch_get_main_queue())
-            {
-                self.activityIndicator.hidden = false
-                self.activityIndicator.startAnimating()
-            }
+            showhideActivityIndicator(false)
             
             let geocoder = CLGeocoder()
             
@@ -85,11 +81,7 @@ class WhereAreYou: UIViewController, UITextViewDelegate
                     alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
                     self.presentViewController(alert, animated: true, completion: nil)
                     
-                    dispatch_async(dispatch_get_main_queue())
-                    {
-                            self.activityIndicator.hidden = true
-                            self.activityIndicator.stopAnimating()
-                    }
+                    self.showhideActivityIndicator(true)
                 }
                 else
                 {
@@ -110,12 +102,8 @@ class WhereAreYou: UIViewController, UITextViewDelegate
                         DataModel.sharedInstance.udacityStudentStruct.longitude = coordinates.longitude
                         DataModel.sharedInstance.udacityStudentStruct.latitude = coordinates.latitude
                     }
-                    
-                    dispatch_async(dispatch_get_main_queue())
-                    {
-                            self.activityIndicator.hidden = true
-                            self.activityIndicator.stopAnimating()
-                    }
+                 
+                    self.showhideActivityIndicator(true)
                     
                     self.secondView.hidden = false
                     self.firstView.hidden = true
@@ -134,11 +122,7 @@ class WhereAreYou: UIViewController, UITextViewDelegate
         }
         else
         {
-            dispatch_async(dispatch_get_main_queue())
-            {
-                    self.activityIndicator.hidden = false
-                    self.activityIndicator.startAnimating()
-            }
+            showhideActivityIndicator(false)
             
             DataModel.sharedInstance.udacityStudentStruct.mediaURL = textViewURL.text
             HttpsRequestManager.sharedInstance.submitUserLoction()
@@ -159,11 +143,7 @@ class WhereAreYou: UIViewController, UITextViewDelegate
     */
     func postStudentLocationSucceed()
     {
-        dispatch_async(dispatch_get_main_queue())
-        {
-                self.activityIndicator.hidden = true
-                self.activityIndicator.stopAnimating()
-        }
+        showhideActivityIndicator(true)
         
         dismissViewControllerAnimated(true, completion: { () -> Void in })
     }
@@ -173,11 +153,7 @@ class WhereAreYou: UIViewController, UITextViewDelegate
     */
     func postStudentLocationFailed()
     {
-        dispatch_async(dispatch_get_main_queue())
-        {
-                self.activityIndicator.hidden = true
-                self.activityIndicator.stopAnimating()
-        }
+        showhideActivityIndicator(true)
         
         let alert = UIAlertController(title: "Post Studen Location failure", message: "There has been an unknow problem posting your location. Please try again", preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
@@ -192,5 +168,25 @@ class WhereAreYou: UIViewController, UITextViewDelegate
     func textViewDidBeginEditing(textView: UITextView)
     {
         textView.text = ""
+    }
+    
+    /*!
+    * @brief showhideActivityIndicator: called to start/stop show/hidde the activity intdicator
+    */
+    func showhideActivityIndicator(hidden: Bool)
+    {
+        dispatch_async(dispatch_get_main_queue())
+        {
+            if(hidden)
+            {
+                self.activityIndicator.hidden = true
+                self.activityIndicator.stopAnimating()
+            }
+            else
+            {
+                self.activityIndicator.hidden = false
+                self.activityIndicator.startAnimating()
+            }
+        }
     }
 }
