@@ -68,7 +68,6 @@ class MainViewVC: UIViewController
 
     @IBAction func facebookLogIn(sender: AnyObject)
     {
-        
     }
     
     // MARK: - Keyboard methods
