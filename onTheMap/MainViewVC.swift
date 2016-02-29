@@ -51,8 +51,7 @@ class MainViewVC: UIViewController
     
     @IBAction func udacityLogIn(sender: AnyObject)
     {
-        userName.text = "loebre@gmail.com"
-        password.text = "sIRJORDAN21"
+
 
         if(!userName.hasText() || !password.hasText())
         {
@@ -69,18 +68,6 @@ class MainViewVC: UIViewController
 
     @IBAction func facebookLogIn(sender: AnyObject)
     {
-//        if(!userName.hasText() || !password.hasText())
-//        {
-//            sendUserAlert("Alert",body: "need to set a user and password")
-//        }
-//        else
-//        {
-//            activityIndicator.hidden = false
-//            activityIndicator.startAnimating()
-//            mainView.userInteractionEnabled = false
-//            HttpsRequestManager.sharedInstance.facebookLogIn("loebre@gmail.com", pass: "sIRJORDAN21")
-////            HttpsRequestManager.sharedInstance.facebookLogIn(userName.text!, pass: password.text!)
-//        }
         
     }
     
