@@ -107,10 +107,8 @@ class HttpsRequestManager
         FBSDKProfile.enableUpdatesOnAccessTokenChange(true)
         
         let request = NSMutableURLRequest(URL: NSURL(string: "https://www.udacity.com/api/session")!)
-//        let fbAccessToken = FBSDKAccessToken.currentAccessToken().tokenString
         
         let accessToken = FBSDKAccessToken.currentAccessToken()
-        
         
         request.HTTPMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Accept")
@@ -123,7 +121,8 @@ class HttpsRequestManager
             
             if error != nil
             {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                dispatch_async(dispatch_get_main_queue(),
+                { () -> Void in
                      NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInFailed", object: nil)
                 })
                 return
@@ -133,7 +132,8 @@ class HttpsRequestManager
             
             print(NSString(data: newData, encoding: NSUTF8StringEncoding))
             
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            dispatch_async(dispatch_get_main_queue(),
+            { () -> Void in
                 NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInSucceed", object: nil)
             })
         }
@@ -158,7 +158,8 @@ class HttpsRequestManager
                 // Handle error...
                 if error != nil
                 {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    dispatch_async(dispatch_get_main_queue(),
+                    { () -> Void in
                         NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationFailed", object: nil)
                     })
                     return
@@ -204,7 +205,8 @@ class HttpsRequestManager
                 data, response, error in
             if error != nil
             { // Handle error…
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                dispatch_async(dispatch_get_main_queue(),
+                { () -> Void in
                     NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_postStudentLocationSucceed", object: nil)
                 })
 
@@ -212,7 +214,8 @@ class HttpsRequestManager
             }
             else
             {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                dispatch_async(dispatch_get_main_queue(),
+                { () -> Void in
                     NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_postStudentLocationSucceed", object: nil)
                     print(NSString(data: data!, encoding: NSUTF8StringEncoding))
                 })
@@ -284,7 +287,8 @@ class HttpsRequestManager
                     DataModel.sharedInstance.studentsLocationArray.append(studentModel)
                 }
                     
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                dispatch_async(dispatch_get_main_queue(),
+                { () -> Void in
                     NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_StudentsLocationSucceed", object: nil)
                 })
             }
@@ -307,7 +311,11 @@ class HttpsRequestManager
             {
                 guard   let userDict = json["user"] as? [String: AnyObject],
                         let lastName = userDict["last_name"] as? String,
-                        let firstName = userDict["first_name"] as? String else { /* report no user information */return }
+                        let firstName = userDict["first_name"] as? String
+                else
+                    { /* report no user information */
+                        return
+                    }
                 
                 print("Hello : \(firstName) \(lastName)")
                 DataModel.sharedInstance.udacityStudentStruct.lastName = lastName
@@ -345,7 +353,8 @@ class HttpsRequestManager
                         let session_expiration = session["expiration"] as? String
                 else
                 {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    dispatch_async(dispatch_get_main_queue(),
+                    { () -> Void in
                         NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInFailedCredentials", object: nil)
                     })
                     
@@ -357,7 +366,8 @@ class HttpsRequestManager
                 DataModel.sharedInstance.udacityStudentStruct.sessionID = session_id
                 DataModel.sharedInstance.udacityStudentStruct.sessionExpiration = session_expiration
                 
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                dispatch_async(dispatch_get_main_queue(),
+                { () -> Void in
                     NSNotificationCenter.defaultCenter().postNotificationName("HTTPRequest_LogInSucceed", object: nil)
                 })
             }

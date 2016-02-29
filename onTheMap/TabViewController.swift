@@ -70,7 +70,8 @@ class TabViewController: UIViewController, UINavigationControllerDelegate
             }
             else
             {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                dispatch_async(dispatch_get_main_queue(),
+                { () -> Void in
                     let alert = UIAlertController(title: "Invalid URL", message: "The URL has a wrong format", preferredStyle: UIAlertControllerStyle.Alert)
                     alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
                     self.presentViewController(alert, animated: true, completion: nil)
@@ -79,7 +80,8 @@ class TabViewController: UIViewController, UINavigationControllerDelegate
         }
         else
         {
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            dispatch_async(dispatch_get_main_queue(),
+            { () -> Void in
                 let alert = UIAlertController(title: "No URL", message: "The URL is empty", preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
                 self.presentViewController(alert, animated: true, completion: nil)
@@ -111,17 +113,6 @@ class TabViewController: UIViewController, UINavigationControllerDelegate
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!)
     {
-//        if segue.identifier == "tab2DetailsView"
-//        {
-//            // Create a new variable to store the instance of PlayerTableViewController
-//            let destinationVC = segue.destinationViewController as! DetailViewController
-//            
-//            if let index = currentIntdex
-//            {
-//                print("About to segue to DetailsView with index => \(index)")
-//                destinationVC.currentIndex = index
-//            }
-//        }
     }
     
     override func canPerformUnwindSegueAction(action: Selector, fromViewController: UIViewController, withSender sender: AnyObject) -> Bool
@@ -130,13 +121,15 @@ class TabViewController: UIViewController, UINavigationControllerDelegate
         {
             return true
         }
+        
         return false
     }
 
     // MARK: - Notifications callBack methods
     func studentsLocationSucceed()
     {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        dispatch_async(dispatch_get_main_queue(),
+        { () -> Void in
             self.uiBusy.stopAnimating()
             
             let refreshButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: "refreshButton:")
@@ -146,7 +139,8 @@ class TabViewController: UIViewController, UINavigationControllerDelegate
     
     func studentsLocationFailed()
     {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        dispatch_async(dispatch_get_main_queue(),
+        { () -> Void in
             let alert = UIAlertController(title: "Failed loading data", message: "loading students location has failed for unknown reasons", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
@@ -156,14 +150,15 @@ class TabViewController: UIViewController, UINavigationControllerDelegate
     func logOutSucceed()
     {
         dispatch_async(dispatch_get_main_queue(),
-            { () -> Void in
+        { () -> Void in
                 self.dismissViewControllerAnimated(true, completion: nil)
         })
     }
     
     func logOutFailed()
     {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        dispatch_async(dispatch_get_main_queue(),
+        { () -> Void in
             let alert = UIAlertController(title: "Failed to LogOut", message: "LoggingOut has failed for unknown reasons", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)

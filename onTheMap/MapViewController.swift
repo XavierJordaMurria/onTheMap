@@ -47,6 +47,7 @@ class MapViewController: UIViewController, MKMapViewDelegate
         annotation.subtitle = "London"
         mapView.addAnnotation(annotation)
     }
+    
     @IBAction func refreshButton(sender: AnyObject)
     {
         HttpsRequestManager.sharedInstance.gettingStudentsLocation()
@@ -67,7 +68,8 @@ class MapViewController: UIViewController, MKMapViewDelegate
     // MARK: - Students Location Notifications
     func studentsLocationSucceed()
     {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        dispatch_async(dispatch_get_main_queue(),
+        { () -> Void in
             self.uiBusy.stopAnimating()
             let refreshButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: "refreshButton:")
             self.navigationItem.rightBarButtonItem = refreshButton
@@ -122,7 +124,8 @@ class MapViewController: UIViewController, MKMapViewDelegate
     
     func studentsLocationFailed()
     {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        dispatch_async(dispatch_get_main_queue(),
+        { () -> Void in
             let alert = UIAlertController(title: "Failed loading data", message: "loading students location has failed for unknown reasons", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
@@ -132,14 +135,15 @@ class MapViewController: UIViewController, MKMapViewDelegate
     func logOutSucceed()
     {
         dispatch_async(dispatch_get_main_queue(),
-            { () -> Void in
+        { () -> Void in
                 self.dismissViewControllerAnimated(true, completion: nil)
         })
     }
     
     func logOutFailed()
     {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        dispatch_async(dispatch_get_main_queue(),
+        { () -> Void in
             let alert = UIAlertController(title: "Failed to LogOut", message: "LoggingOut has failed for unknown reasons", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
@@ -189,7 +193,8 @@ class MapViewController: UIViewController, MKMapViewDelegate
                 }
                 else
                 {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    dispatch_async(dispatch_get_main_queue(),
+                    { () -> Void in
                         let alert = UIAlertController(title: "Invalid URL", message: "The URL has a wrong format", preferredStyle: UIAlertControllerStyle.Alert)
                         alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
                         self.presentViewController(alert, animated: true, completion: nil)

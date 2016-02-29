@@ -54,7 +54,10 @@ class WhereAreYou: UIViewController, UITextViewDelegate
     // MARK: - action methods
     @IBAction func cancelButton(sender: AnyObject)
     {
-        dismissViewControllerAnimated(true, completion: { () -> Void in })
+        dismissViewControllerAnimated(true, completion:
+        {
+                () -> Void in
+        })
     }
 
     @IBAction func findOnMapButton(sender: AnyObject)
